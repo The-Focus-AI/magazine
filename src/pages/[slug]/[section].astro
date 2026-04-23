@@ -1,6 +1,7 @@
 ---
 import { getCollection, getEntry } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import '../../styles/magazine.css';
 
 export async function getStaticPaths() {
   const sections = await getCollection('sections');
@@ -27,626 +28,111 @@ const currentIndex = siblings.findIndex((s) => s.slug === section.slug);
 const prev = siblings[currentIndex - 1];
 const next = siblings[currentIndex + 1];
 
-const verticalLabel = {
-  state: 'STATE',
-  surface: 'SURFACE',
-  runtime: 'RUNTIME',
-  harness: 'HARNESS',
-  local: 'LOCAL',
-  wire: 'WIRE',
+const verticalLabel: Record<string, string> = {
+  state: 'State',
+  surface: 'Surface',
+  runtime: 'Runtime',
+  harness: 'Harness',
+  local: 'Local',
+  wire: 'Wire',
 };
 
-const issueSlugForUrl = (s) => s.slug.replace(`${section.data.issue}-`, '');
+const issueUrlSlug = (s: any) => s.slug.replace(`${section.data.issue}-`, '');
 const vertical = issue.data.vertical;
 const issueNumPadded = String(issue.data.issue_number).padStart(2, '0');
 const pageNum = String(currentIndex + 1).padStart(2, '0');
+
+const sourceLines: string[] = [];
+if (section.data.sources) {
+  for (const src of section.data.sources) {
+    sourceLines.push(`${src.type.toUpperCase()} · ${src.slug}`);
+  }
+}
 ---
-<BaseLayout title={`${section.data.title} · ${issue.data.issue_title}`}>
-  <article class={`reader voice-${issue.data.voice}`}>
-    <!-- Top bar: breadcrumb + section/issue meta -->
-    <div class="reader-topbar">
-      <div class="reader-topbar-inner">
-        <nav class="reader-breadcrumb" aria-label="Breadcrumb">
-          <a href="/" class="mono">Issues</a>
-          <span class="reader-breadcrumb-sep">/</span>
-          <a href={`/${section.data.issue}/`} class="mono">
-            {verticalLabel[vertical]}&nbsp;№&nbsp;{issueNumPadded}
-          </a>
-          <span class="reader-breadcrumb-sep">/</span>
-          <span class="mono">
-            {section.data.section_marker ?? `§ ${section.data.section_number}`}
+<BaseLayout title={`${section.data.title} · ${verticalLabel[vertical]} № ${issueNumPadded}`}>
+  <div data-mag={vertical} class="mag-root">
+    <div class="mag">
+
+      <article class="chapter" id={`ch${section.data.section_number}`}>
+        <div class="chapter-head">
+          <span class="chapter-num">{section.data.section_marker ?? `§ ${section.data.section_number}`}</span>
+          <span class="chapter-kicker">
+            {verticalLabel[vertical]} · № {issueNumPadded} · {issue.data.issue_title}
           </span>
-        </nav>
-
-        <div class="reader-pagemeta mono">
-          Page&nbsp;{pageNum}&nbsp;of&nbsp;{String(siblings.length).padStart(2, '0')}
-        </div>
-      </div>
-    </div>
-
-    <div class="reader-sheet">
-      <!-- Margin rail with running label -->
-      <aside class="reader-rail" aria-hidden="true">
-        <div class="reader-rail-label">
-          {verticalLabel[vertical]}&nbsp;·&nbsp;№&nbsp;{issueNumPadded}&nbsp;·&nbsp;{issue.data.issue_title}
-        </div>
-      </aside>
-
-      <div class="reader-body">
-        <!-- Section marker -->
-        <div class="reader-marker">
-          <span class="reader-marker-sym">
-            {section.data.section_marker ?? `§ ${section.data.section_number}`}
-          </span>
-          <span class="reader-marker-rule" aria-hidden="true"></span>
-          <span class="spot-number reader-marker-num">{pageNum}</span>
         </div>
 
-        <!-- Heading -->
-        <header class="reader-head">
-          <h1 class="reader-title">{section.data.title}</h1>
-          {section.data.summary && (
-            <p class="reader-summary">{section.data.summary}</p>
-          )}
-        </header>
+        <h1 class="chapter-title">{section.data.title}</h1>
 
-        {section.data.pull_quote && (
-          <figure class="reader-pullquote">
-            <blockquote>
-              <span class="reader-pullquote-mark" aria-hidden="true">"</span>
-              {section.data.pull_quote}
-              <span class="reader-pullquote-mark reader-pullquote-mark-close" aria-hidden="true">"</span>
-            </blockquote>
-          </figure>
+        {section.data.summary && (
+          <p class="chapter-subtitle">{section.data.summary}</p>
         )}
 
-        <!-- Body prose -->
-        <div class="reader-prose">
-          <Content />
-        </div>
-
-        <!-- Sources + concepts side meta -->
-        {(section.data.sources?.length || section.data.concepts?.length) && (
-          <div class="reader-meta-blocks">
-            {section.data.sources && section.data.sources.length > 0 && (
-              <div class="reader-meta-block">
-                <div class="reader-meta-label">
-                  <span class="spot-number">§</span>&nbsp;Sources
-                </div>
-                <ul class="reader-meta-list">
-                  {section.data.sources.map((source) => (
-                    <li>
-                      <span class="reader-meta-tag mono">{source.type}</span>
-                      <code class="reader-meta-slug">{source.slug}</code>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-
-            {section.data.concepts && section.data.concepts.length > 0 && (
-              <div class="reader-meta-block">
-                <div class="reader-meta-label">
-                  <span class="spot-number">§</span>&nbsp;Concepts
-                </div>
-                <ul class="reader-meta-list reader-meta-list-concepts">
-                  {section.data.concepts.map((concept) => (
-                    <li><code class="reader-meta-slug">{concept}</code></li>
-                  ))}
-                </ul>
-              </div>
-            )}
+        {sourceLines.length > 0 && (
+          <div class="chapter-meta">
+            {sourceLines.map((line) => <span>{line}</span>)}
           </div>
         )}
 
-        <!-- Prev/next -->
-        <nav class="reader-nav" aria-label="Section navigation">
+        <div class="chapter-body">
+          <Content />
+        </div>
+
+        {section.data.pull_quote && (
+          <div class="pull">{section.data.pull_quote}</div>
+        )}
+
+        <div class="chapter-end">§</div>
+      </article>
+
+      {/* Prev / Issue / Next nav */}
+      <nav class="section-nav">
+        <div class="nav-prev">
           {prev ? (
-            <a class="reader-nav-link prev" href={`/${section.data.issue}/${issueSlugForUrl(prev)}/`}>
-              <span class="reader-nav-direction mono">← Previous</span>
-              <span class="reader-nav-title">{prev.data.title}</span>
+            <a href={`/${section.data.issue}/${issueUrlSlug(prev)}/`}>
+              ← {prev.data.section_marker ?? `§ ${prev.data.section_number}`} {prev.data.title}
             </a>
-          ) : <span class="reader-nav-link disabled" />}
-
-          <a class="reader-nav-link issue" href={`/${section.data.issue}/`}>
-            <span class="reader-nav-direction mono">Return to issue</span>
-            <span class="reader-nav-title">
-              {verticalLabel[vertical]}&nbsp;№&nbsp;{issueNumPadded}
-            </span>
+          ) : (
+            <span>Cover</span>
+          )}
+        </div>
+        <div class="nav-issue">
+          <a href={`/${section.data.issue}/`}>
+            {verticalLabel[vertical]} № {issueNumPadded}
           </a>
-
+          <span class="nav-page">p. {pageNum} / {String(siblings.length).padStart(2, '0')}</span>
+        </div>
+        <div class="nav-next">
           {next ? (
-            <a class="reader-nav-link next" href={`/${section.data.issue}/${issueSlugForUrl(next)}/`}>
-              <span class="reader-nav-direction mono">Next →</span>
-              <span class="reader-nav-title">{next.data.title}</span>
+            <a href={`/${section.data.issue}/${issueUrlSlug(next)}/`}>
+              {next.data.section_marker ?? `§ ${next.data.section_number}`} {next.data.title} →
             </a>
-          ) : <span class="reader-nav-link disabled" />}
-        </nav>
+          ) : (
+            <a href={`/${section.data.issue}/`}>Back to issue →</a>
+          )}
+        </div>
+      </nav>
+
+      <div class="back-outer">
+        <a href="/" class="back-to-issues">← All issues</a>
       </div>
     </div>
-  </article>
+  </div>
 
-  <style define:vars={{ verticalAccent: `var(--${vertical}-accent)` }}>
-    /* ══ Top bar ══════════════════════════════════════════════════════ */
-    .reader-topbar {
-      background: var(--paper);
-      border-bottom: 1px solid var(--void);
-    }
+  <style>
+    .mag-root { position: relative; }
 
-    .reader-topbar-inner {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0.85rem 2rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 1.5rem;
-      font-size: 11px;
-      letter-spacing: 0.08em;
-    }
-
-    .reader-breadcrumb {
-      display: flex;
-      gap: 0.6rem;
-      align-items: center;
-      font-size: 11px;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-    }
-
-    .reader-breadcrumb a {
-      color: var(--void);
-      text-decoration: none;
-      border-bottom: 1px solid transparent;
-    }
-
-    .reader-breadcrumb a:hover {
-      color: var(--rand-blue);
-      border-bottom-color: var(--rand-blue);
-    }
-
-    .reader-breadcrumb-sep {
-      color: rgba(26, 26, 26, 0.35);
-      font-family: var(--mono);
-    }
-
-    .reader-pagemeta {
-      font-size: 10px;
-      font-weight: 400;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: rgba(26, 26, 26, 0.55);
-    }
-
-    /* ══ Reading sheet ═══════════════════════════════════════════════ */
-    .reader {
-      padding: 0 0 5rem;
-    }
-
-    .reader-sheet {
-      max-width: 1200px;
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: 140px 1fr;
-      gap: 3rem;
-      padding: 3rem 2rem;
-    }
-
-    /* ── Margin rail ─ */
-    .reader-rail {
-      position: relative;
-      padding-top: 0.5rem;
-    }
-
-    .reader-rail-label {
-      font-family: var(--mono);
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 0.3em;
-      text-transform: uppercase;
-      color: var(--verticalAccent);
-      writing-mode: vertical-rl;
-      transform: rotate(180deg);
-      position: sticky;
-      top: 5rem;
-      white-space: nowrap;
-    }
-
-    /* ── Section marker row ─ */
-    .reader-marker {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      margin-bottom: 2rem;
-    }
-
-    .reader-marker-sym {
-      font-family: var(--mono);
-      font-size: 13px;
-      font-weight: 700;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--verticalAccent);
-    }
-
-    .reader-marker-rule {
-      flex: 1;
-      height: 1px;
-      background: var(--verticalAccent);
-      opacity: 0.6;
-    }
-
-    .reader-marker-num {
-      font-size: 12px;
-      color: var(--alert-red);
-    }
-
-    /* ── Section head ─ */
-    .reader-head {
-      margin-bottom: 2.5rem;
-      max-width: 720px;
-    }
-
-    .reader-title {
-      font-family: var(--sans);
-      font-weight: 900;
-      font-size: clamp(2.1rem, 4.2vw, 3.4rem);
-      line-height: 0.95;
-      letter-spacing: -0.025em;
-      color: var(--void);
-      margin: 0 0 1rem;
-    }
-
-    .reader-summary {
-      font-family: var(--sans);
-      font-size: 1.2rem;
-      font-weight: 400;
-      font-style: italic;
-      line-height: 1.45;
-      color: rgba(26, 26, 26, 0.7);
-      margin: 0;
-    }
-
-    /* ── Pull quote ─ */
-    .reader-pullquote {
-      max-width: 720px;
-      margin: 3rem 0;
-    }
-
-    .reader-pullquote blockquote {
-      font-family: var(--sans);
-      font-size: clamp(1.6rem, 3vw, 2.2rem);
-      font-weight: 500;
-      font-style: italic;
-      line-height: 1.2;
-      color: var(--void);
-      margin: 0;
-      padding: 1.25rem 0 1.25rem 2.25rem;
-      border-left: 4px solid var(--verticalAccent);
-      position: relative;
-    }
-
-    .reader-pullquote-mark {
-      color: var(--alert-red);
-      font-size: 1.5em;
-      line-height: 0;
-      font-family: var(--serif), Georgia, serif;
-      position: relative;
-      top: 0.2em;
-    }
-
-    .reader-pullquote-mark-close {
-      margin-left: 0.1em;
-    }
-
-    /* ══ Prose ═══════════════════════════════════════════════════════ */
-    .reader-prose {
-      max-width: 640px;
-      font-size: 17px;
-      line-height: 1.7;
-      color: var(--void);
-    }
-
-    .reader-prose :global(p) {
-      margin: 0 0 1.5rem;
-    }
-
-    .reader-prose :global(h2) {
-      font-family: var(--sans);
-      font-weight: 900;
-      font-size: 1.6rem;
-      line-height: 1.15;
-      letter-spacing: -0.015em;
-      margin: 3rem 0 1rem;
-      color: var(--void);
-      padding-bottom: 0.4rem;
-      border-bottom: 1px solid var(--rule-subtle);
-    }
-
-    .reader-prose :global(h3) {
-      font-family: var(--sans);
-      font-weight: 700;
-      font-size: 1.2rem;
-      line-height: 1.25;
-      margin: 2.25rem 0 0.65rem;
-      color: var(--void);
-    }
-
-    .reader-prose :global(h4) {
-      font-family: var(--mono);
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      margin: 1.75rem 0 0.5rem;
-      color: var(--alert-red);
-    }
-
-    .reader-prose :global(ul),
-    .reader-prose :global(ol) {
-      margin: 0 0 1.5rem;
-      padding-left: 1.5rem;
-    }
-
-    .reader-prose :global(li) {
-      margin-bottom: 0.55rem;
-      line-height: 1.6;
-    }
-
-    .reader-prose :global(strong) {
-      font-weight: 700;
-      color: var(--void);
-    }
-
-    .reader-prose :global(em) {
-      font-style: italic;
-    }
-
-    .reader-prose :global(code) {
-      font-family: var(--mono);
-      font-size: 0.88em;
-      background: var(--surface);
-      padding: 0.1em 0.4em;
-      border-radius: 2px;
-      color: var(--void);
-    }
-
-    .reader-prose :global(pre) {
-      background: var(--void);
-      color: var(--paper);
-      padding: 1.25rem 1.5rem;
-      overflow-x: auto;
-      font-size: 13px;
-      line-height: 1.55;
-      margin: 1.75rem 0;
-      border: 1px solid var(--void);
-    }
-
-    .reader-prose :global(pre code) {
-      background: transparent;
-      padding: 0;
-      color: inherit;
-    }
-
-    .reader-prose :global(blockquote) {
-      margin: 1.75rem 0;
-      padding: 0.5rem 0 0.5rem 1.25rem;
-      border-left: 3px solid var(--verticalAccent);
-      font-style: italic;
-      color: rgba(26, 26, 26, 0.75);
-    }
-
-    .reader-prose :global(a) {
-      color: var(--rand-blue);
-      text-decoration: underline;
-      text-decoration-thickness: 1px;
-      text-underline-offset: 3px;
-    }
-
-    .reader-prose :global(a:hover) {
-      color: var(--alert-red);
-    }
-
-    .reader-prose :global(hr) {
-      border: none;
-      border-top: 1px dashed var(--rule-subtle);
-      margin: 2.5rem 0;
-    }
-
-    .reader-prose :global(table) {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 1.75rem 0;
-      font-size: 0.92em;
-    }
-
-    .reader-prose :global(th) {
-      font-family: var(--mono);
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      text-align: left;
-      padding: 0.6rem 0.75rem;
-      border-bottom: 2px solid var(--void);
-    }
-
-    .reader-prose :global(td) {
-      padding: 0.6rem 0.75rem;
-      border-bottom: 1px solid var(--rule-subtle);
-      vertical-align: top;
-    }
-
-    /* ══ Meta blocks ═════════════════════════════════════════════════ */
-    .reader-meta-blocks {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 2rem;
-      margin: 3.5rem 0;
-      padding: 2rem;
-      background: var(--surface);
-      border-left: 4px solid var(--verticalAccent);
-    }
-
-    .reader-meta-label {
-      font-family: var(--mono);
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--void);
-      margin-bottom: 0.85rem;
-    }
-
-    .reader-meta-list {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 0.45rem;
-    }
-
-    .reader-meta-list-concepts {
-      flex-direction: row;
-      flex-wrap: wrap;
-      gap: 0.4rem;
-    }
-
-    .reader-meta-list li {
-      display: flex;
-      gap: 0.6rem;
-      align-items: baseline;
-      font-size: 12.5px;
-    }
-
-    .reader-meta-tag {
+    .nav-page {
+      display: block;
+      margin-top: 4px;
       font-size: 9px;
-      font-weight: 700;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--alert-red);
-      min-width: 60px;
+      opacity: 0.65;
     }
 
-    .reader-meta-slug {
-      font-family: var(--mono);
-      font-size: 12.5px;
-      color: var(--void);
-      background: transparent;
-      padding: 0;
-    }
-
-    .reader-meta-list-concepts .reader-meta-slug {
-      background: var(--paper);
-      padding: 0.18rem 0.55rem;
-      border-radius: 2px;
-      font-size: 11px;
-    }
-
-    /* ══ Prev/next nav ═══════════════════════════════════════════════ */
-    .reader-nav {
-      margin-top: 4rem;
-      padding-top: 2rem;
-      border-top: 1px solid var(--void);
-      display: grid;
-      grid-template-columns: 1fr auto 1fr;
-      gap: 1.5rem;
-      align-items: stretch;
-    }
-
-    .reader-nav-link {
-      display: flex;
-      flex-direction: column;
-      gap: 0.35rem;
-      padding: 1rem 1.25rem;
-      background: var(--paper);
-      border: 1px solid var(--rule-subtle);
-      text-decoration: none;
-      color: var(--void);
-      transition: background 180ms var(--ease), border-color 180ms var(--ease), transform 180ms var(--ease);
-    }
-
-    .reader-nav-link:hover {
-      background: var(--surface);
-      border-color: var(--void);
-    }
-
-    .reader-nav-link.prev:hover {
-      transform: translateX(-3px);
-    }
-
-    .reader-nav-link.next {
-      text-align: right;
-    }
-
-    .reader-nav-link.next:hover {
-      transform: translateX(3px);
-    }
-
-    .reader-nav-link.issue {
-      align-items: center;
+    .back-outer {
+      padding: 48px 0 80px;
+      border-top: 1px dashed var(--mag-rule);
+      margin-top: 40px;
       text-align: center;
-      border-top: 3px solid var(--verticalAccent);
-    }
-
-    .reader-nav-link.disabled {
-      background: transparent;
-      border: 1px dashed var(--rule-subtle);
-      cursor: default;
-    }
-
-    .reader-nav-direction {
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: rgba(26, 26, 26, 0.6);
-    }
-
-    .reader-nav-title {
-      font-family: var(--sans);
-      font-size: 14.5px;
-      font-weight: 700;
-      line-height: 1.25;
-      color: var(--void);
-    }
-
-    /* ══ Responsive ═══════════════════════════════════════════════════ */
-    @media (max-width: 900px) {
-      .reader-topbar-inner {
-        padding: 0.75rem 1.25rem;
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0.4rem;
-      }
-
-      .reader-sheet {
-        grid-template-columns: 1fr;
-        gap: 1.5rem;
-        padding: 2rem 1.25rem;
-      }
-
-      .reader-rail {
-        display: none;
-      }
-
-      .reader-prose {
-        font-size: 16px;
-      }
-
-      .reader-pullquote blockquote {
-        padding-left: 1.25rem;
-      }
-
-      .reader-nav {
-        grid-template-columns: 1fr;
-        gap: 0.75rem;
-      }
-
-      .reader-nav-link.next {
-        text-align: left;
-      }
     }
   </style>
 </BaseLayout>

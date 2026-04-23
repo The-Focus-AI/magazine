@@ -1,0 +1,127 @@
+---
+/**
+ * Per-vertical cover emblem. Each vertical gets its own signature SVG mark.
+ * Drawn with theme-aware colors via CSS custom properties.
+ */
+interface Props {
+  vertical: 'state' | 'surface' | 'runtime' | 'harness' | 'local' | 'wire';
+}
+const { vertical } = Astro.props;
+---
+
+{vertical === 'state' && (
+  <svg class="emblem" viewBox="0 0 340 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <g fill="none" stroke="currentColor" stroke-width="1">
+      <rect x="10" y="10" width="320" height="52" fill="var(--mag-spot)" stroke="none" />
+      <rect x="10" y="68" width="320" height="52" fill="var(--mag-accent)" stroke="none" />
+      <rect x="10" y="126" width="320" height="52" fill="var(--mag-ink)" stroke="none" />
+      <text x="24" y="44" font-family="IBM Plex Mono, monospace" font-size="11" letter-spacing="3" fill="var(--mag-paper)">DAY ONE</text>
+      <text x="24" y="102" font-family="IBM Plex Mono, monospace" font-size="11" letter-spacing="3" fill="var(--mag-paper)">DAY TWO</text>
+      <text x="24" y="160" font-family="IBM Plex Mono, monospace" font-size="11" letter-spacing="3" fill="var(--mag-paper)">SYNTHESIS</text>
+      <text x="316" y="44" font-family="IBM Plex Mono, monospace" font-size="11" text-anchor="end" fill="var(--mag-paper)">01</text>
+      <text x="316" y="102" font-family="IBM Plex Mono, monospace" font-size="11" text-anchor="end" fill="var(--mag-paper)">02</text>
+      <text x="316" y="160" font-family="IBM Plex Mono, monospace" font-size="11" text-anchor="end" fill="var(--mag-paper)">03</text>
+    </g>
+  </svg>
+)}
+
+{vertical === 'surface' && (
+  <svg class="emblem" viewBox="0 0 320 180" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <g fill="none" stroke="currentColor" stroke-width="1">
+      <rect x="10" y="10" width="300" height="36" fill="var(--mag-accent)" stroke="none"/>
+      <rect x="10" y="52" width="300" height="60" fill="var(--mag-spot)" stroke="none"/>
+      <rect x="10" y="118" width="300" height="52" fill="var(--mag-ink)" stroke="none"/>
+      <text x="20" y="33" font-family="IBM Plex Mono, monospace" font-size="10" letter-spacing="2" fill="var(--mag-paper)">PAYLOAD</text>
+      <text x="20" y="85" font-family="IBM Plex Mono, monospace" font-size="10" letter-spacing="2" fill="var(--mag-paper)">TRANSPORT</text>
+      <text x="20" y="148" font-family="IBM Plex Mono, monospace" font-size="10" letter-spacing="2" fill="var(--mag-paper)">DISTRIBUTION</text>
+      <text x="300" y="33" font-family="IBM Plex Mono, monospace" font-size="10" text-anchor="end" fill="var(--mag-paper)">01</text>
+      <text x="300" y="85" font-family="IBM Plex Mono, monospace" font-size="10" text-anchor="end" fill="var(--mag-paper)">02</text>
+      <text x="300" y="148" font-family="IBM Plex Mono, monospace" font-size="10" text-anchor="end" fill="var(--mag-paper)">03</text>
+    </g>
+  </svg>
+)}
+
+{vertical === 'runtime' && (
+  <svg class="emblem" viewBox="0 0 340 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <g fill="none" stroke="var(--mag-ink)" stroke-width="1.5">
+      <rect x="10" y="20" width="320" height="160" fill="var(--mag-paper-2)" />
+      <line x1="10" y1="48" x2="330" y2="48" stroke="var(--mag-accent)" stroke-width="2" />
+      <line x1="10" y1="170" x2="330" y2="170" stroke="var(--mag-accent)" stroke-width="2" />
+      <text x="24" y="42" font-family="JetBrains Mono, monospace" font-size="11" fill="var(--mag-ink)">$ pi run --code-mode</text>
+      <g font-family="JetBrains Mono, monospace" font-size="10" fill="var(--mag-ink)">
+        <text x="24" y="78">&gt; catalog.search(&quot;cloudflare:workers&quot;)</text>
+        <text x="24" y="98">&gt; catalog.execute(plan, {'{'} sandbox: &quot;isolate&quot; {'}'} )</text>
+        <text x="24" y="118" fill="var(--mag-spot)">  [OK] ran in 12ms · 1 iframe · 0 leaks</text>
+        <text x="24" y="142" fill="var(--mag-accent)">&gt; _</text>
+      </g>
+      <text x="316" y="186" font-family="JetBrains Mono, monospace" font-size="9" text-anchor="end" fill="var(--mag-ink-mute)" letter-spacing="1.5">ISSUE №01 · CODE MODE</text>
+    </g>
+  </svg>
+)}
+
+{vertical === 'harness' && (
+  <svg class="emblem" viewBox="0 0 340 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <g stroke="var(--mag-ink)" stroke-width="1" fill="none">
+      <rect x="10" y="10" width="320" height="180" />
+      <line x1="10" y1="50" x2="330" y2="50" />
+      <line x1="10" y1="150" x2="330" y2="150" />
+      {/* Hatched background in blueprint style */}
+      {Array.from({ length: 20 }).map((_, i) => (
+        <line
+          x1={10 + i * 16}
+          y1="50"
+          x2={10 + i * 16 - 30}
+          y2="150"
+          stroke="var(--mag-rule)"
+          stroke-width="0.5"
+        />
+      ))}
+      {/* Three stacked blocks labeled Gen 1 / Gen 2 / Gen 3 */}
+      <rect x="30" y="62" width="80" height="24" fill="var(--mag-paper-2)" stroke="var(--mag-ink)" />
+      <rect x="130" y="80" width="80" height="32" fill="var(--mag-paper-2)" stroke="var(--mag-ink)" />
+      <rect x="230" y="70" width="80" height="68" fill="var(--mag-accent)" stroke="var(--mag-ink)" />
+      <text x="70" y="78" font-family="JetBrains Mono, monospace" font-size="9" text-anchor="middle" fill="var(--mag-ink)">GEN 1</text>
+      <text x="170" y="100" font-family="JetBrains Mono, monospace" font-size="9" text-anchor="middle" fill="var(--mag-ink)">GEN 2</text>
+      <text x="270" y="108" font-family="JetBrains Mono, monospace" font-size="11" text-anchor="middle" fill="var(--mag-paper)" font-weight="700">GEN 3</text>
+      <text x="24" y="36" font-family="JetBrains Mono, monospace" font-size="9" letter-spacing="2" fill="var(--mag-ink-mute)">FIG. 01 — THE STACK, ASCENDING</text>
+      <text x="24" y="172" font-family="JetBrains Mono, monospace" font-size="9" letter-spacing="2" fill="var(--mag-ink-mute)">H A R N E S S · F I E L D   M A N U A L</text>
+    </g>
+  </svg>
+)}
+
+{vertical === 'local' && (
+  <svg class="emblem" viewBox="0 0 340 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <g>
+      <rect x="10" y="10" width="320" height="180" fill="var(--mag-ink)" />
+      {/* Big stenciled word */}
+      <text x="170" y="104" font-family="Fraunces, serif" font-weight="900" font-size="60" text-anchor="middle" fill="var(--mag-accent)" letter-spacing="-2">INFERENCE</text>
+      <text x="170" y="150" font-family="Fraunces, serif" font-weight="400" font-style="italic" font-size="36" text-anchor="middle" fill="var(--mag-paper)">or die.</text>
+      {/* Corner marks */}
+      <g stroke="var(--mag-paper)" stroke-width="1.5" fill="none">
+        <path d="M 20 20 L 20 34 M 20 20 L 34 20" />
+        <path d="M 320 20 L 320 34 M 320 20 L 306 20" />
+        <path d="M 20 180 L 20 166 M 20 180 L 34 180" />
+        <path d="M 320 180 L 320 166 M 320 180 L 306 180" />
+      </g>
+      <text x="170" y="178" font-family="IBM Plex Mono, monospace" font-size="8" text-anchor="middle" fill="var(--mag-paper)" letter-spacing="4">A TRACT ON RUNNING IT YOURSELF</text>
+    </g>
+  </svg>
+)}
+
+{vertical === 'wire' && (
+  <svg class="emblem" viewBox="0 0 340 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <g stroke="var(--mag-ink)" stroke-width="1.5" fill="none">
+      {/* Three nodes connected in triangle — MCP / skills / code mode */}
+      <circle cx="60" cy="150" r="26" fill="var(--mag-paper-2)" />
+      <circle cx="170" cy="50" r="26" fill="var(--mag-accent)" stroke="var(--mag-ink)" />
+      <circle cx="280" cy="150" r="26" fill="var(--mag-spot)" stroke="var(--mag-ink)" />
+      <line x1="86" y1="150" x2="254" y2="150" stroke-dasharray="4 3" />
+      <line x1="76" y1="128" x2="155" y2="68" stroke-dasharray="4 3" />
+      <line x1="264" y1="128" x2="185" y2="68" stroke-dasharray="4 3" />
+      <text x="60" y="155" font-family="IBM Plex Mono, monospace" font-size="10" text-anchor="middle" fill="var(--mag-ink)" font-weight="700">MCP</text>
+      <text x="170" y="55" font-family="IBM Plex Mono, monospace" font-size="10" text-anchor="middle" fill="var(--mag-paper)" font-weight="700">SKILLS</text>
+      <text x="280" y="155" font-family="IBM Plex Mono, monospace" font-size="10" text-anchor="middle" fill="var(--mag-paper)" font-weight="700">CODE</text>
+      <text x="170" y="192" font-family="IBM Plex Mono, monospace" font-size="9" text-anchor="middle" fill="var(--mag-ink-mute)" letter-spacing="3">THE THREE-LEGGED STOOL · FIG. I</text>
+    </g>
+  </svg>
+)}

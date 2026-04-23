@@ -1,32 +1,30 @@
 ---
 vertical: wire
 issue_number: 1
-issue_title: "MCP, Skills, and Code Mode"
-subtitle: "How agents access capability — four proposals, one problem"
+issue_title: "The Three-Legged Stool"
+subtitle: "MCP, skills, code mode — how agents access capability"
 published: 2026-04-25
 voice: architecture
-tagline: "Four proposals, one problem: how does an agent access capability?"
-summary: "MCP as transport. MCP-UI as rendering surface. Skills as local knowledge. Code mode as convergence. WIRE maps all four into a single stack and shows what sits where."
-cover_color: "#d97706"
+tagline: "Not versus. Plus. The three mechanisms sit on different legs of the same stool."
+summary: "The Twitter war between MCP and skills evangelists, resolved. Laurie Voss's data: correctness is a wash; cost and latency are not. The real answer underneath is code mode — letting the agent write TypeScript against a type definition and run it in a sandboxed isolate. WIRE maps all three onto one composition layer."
+cover_color: "#a65a1c"
 draft: true
 cross_refs:
   - vertical: surface
     issue: 1
-    reason: "UI rendering layer covered at length in SURFACE § I–VI."
+    reason: "MCP Apps — the UI rendering layer on top of the same transport."
   - vertical: runtime
     issue: 1
-    reason: "Code-mode runtime implementation on Cloudflare."
+    reason: "Code mode's runtime primitives, implemented at Cloudflare."
   - vertical: harness
     issue: 1
-    reason: "How Gen-3 harnesses compose these four mechanisms."
+    reason: "How Gen-3 harnesses compose MCP, skills, and code mode into a single loop."
 ---
 
-Four proposals, one problem. Forthcoming.
+Three legs. Not a war.
 
-Features:
-- MCP as Transport — auth-at-URL, the 17,000 servers, the context-bloat problem
-- MCP-UI and the Generative Surface — the component-state piece
-- Skills as Local Knowledge — Claude skills, the short-vs-long findings
-- Code Mode as Convergence — search + execute, the convergence point
-- The Composition Layer — the decision matrix for harness builders
-- Field Guide
+- The MCP leg — when you want it, when you don't
+- The skills leg — short beats long, and why
+- The code-mode leg — search plus execute, the convergence point
+- The stool — composition, and the decision matrix
+- Field guide — picking legs per task

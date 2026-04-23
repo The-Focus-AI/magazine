@@ -2,31 +2,28 @@
 vertical: state
 issue_number: 1
 issue_title: "The Miami Report"
-subtitle: "The state of AI engineering, April 2026"
+subtitle: "Two days at AI Engineer Miami · the forces moved, the patterns haven't refrozen"
 published: 2026-04-25
 voice: reportage
 tagline: "The forces have moved. Three populations are learning agency at once."
-summary: "Two days at AI Engineer Miami 2026. Christopher Alexander's patterns are frozen resolutions of forces — and the forces just moved. STATE traces what broke, what's forming in the rubble, and the three-fold shape of how people, companies, and agents are all learning agency simultaneously."
+summary: "A dispatch from AI Engineer Miami, April 2026. Day One was patterns breaking — the gating function of engineering collapsed, identity scarcity collapsed, Gen-3 SDKs reframed the unit of shipping. Day Two was three new patterns hardening — people, companies, and agents all learning agency at the same moment. Every binary the room had been arguing about resolved into a third path."
 cover_color: "#c4b89d"
-draft: true
+draft: false
 cross_refs:
   - vertical: runtime
     issue: 1
-    reason: "§ IV and § V cite Cloudflare's code-mode runtime primitives."
+    reason: "Ben Davis's Gen-3 claim is what RUNTIME cashes in on — code as the primitive, iframes as the sandbox."
   - vertical: surface
     issue: 1
-    reason: "§ II extends the UI-rendering question into the content-addressability layer."
+    reason: "Dave Kiss's next-user-won't-have-eyes argument extends the UI-rendering question into agent-readable product surfaces."
+  - vertical: local
+    issue: 1
+    reason: "The hallway story about local inference as a vector is the seed of LOCAL's full argument."
 ---
 
-The state of AI engineering after two days in Miami. Forthcoming.
+Two days of notes from the Hyatt Regency, condensed. Christopher Alexander called patterns *frozen resolutions of forces*. That's what these four chapters trace: which forces moved, what refroze, what's still liquid.
 
-Sections:
-- Editor's Note — The Forces Have Moved
-- § I — The Scarcity Inversion
-- § II — The Third Customer
-- § III — Learned Agency
-- § IV — The Coding Agent as Primitive
-- § V — Context as Infrastructure
-- § VI — The Review Surface
-- § ∞ — The Local Counterweight
-- Closing — What Is an Agent?
+- Day One — The forces have moved
+- Day Two — People, companies, agents
+- Editor's note — What is an agent
+- Closing — The rule of threes
