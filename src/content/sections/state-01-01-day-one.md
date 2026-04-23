@@ -26,13 +26,28 @@ sources:
     slug: davis-gen3
 ---
 
+<figure class="figure-span">
+  <img src="/images/state/day1-01-huntley.png" alt="A bearded figure in overalls speaks from a podium to a tech-conference audience." />
+  <figcaption>§ I · Geoffrey Huntley on stage. The collapse of the identity function, reported from a hotel ballroom in Miami.</figcaption>
+</figure>
+
 The one thing I keep thinking about is [Geoffrey Huntley](https://x.com/geoffreyhuntley)'s collapse of the identity function. We used to have tribes — Ruby developer, Rust developer — and sub-tribes — Emacs vs. Vim — and all of that is getting thrown away and melded into one larger thing. There's a bigger shift underneath it. Being a software developer, and the software industry itself, is unsettling right now, and hearing about it from an unhinged New Zealand farmer in overalls really sticks with you. Some big psychological journey is going to have to happen.
 
 In the old Christopher Alexander design-patterns days, patterns were established ways of resolving forces in tension. There's no right answer; there are a handful of stable configurations, and naming them was how we talked about architecture. What it feels like now is that all of those stable configurations are getting shifted. Not a trauma response exactly — more like a formative moment. We can see the readjustment playing out in real time, and it's not settled. It's still swinging around.
 
 One force that's shifting is scarce knowledge and scarce intelligence. From Huntley's point of view, what's collapsing is a kind of *specialness* — if being the only one who knew how to do this was key to your identity, you have some adjusting to do.
 
+<figure>
+  <img src="/images/state/day1-02-no-filter.png" alt="An office cluttered with abandoned prototypes and crumpled paper." />
+  <figcaption>The engineering bottleneck was a filter. Remove it and the room fills with work.</figcaption>
+</figure>
+
 [Dax Raad](https://x.com/thdxr) from OpenCode had a freestyling "You Have No Good Ideas" talk — rawdogging his 15 minutes with no slides, strong opener to the conference. His argument: the difficulty of software engineering used to serve as a gating function that kept bad ideas from getting built. People perceived they had lots of good ideas, but they had to fight engineers to ship them, and that fight was an implicit filter. Now the filter is gone, and it's uncovering the fact that maybe people didn't have that many great ideas to begin with. We've got a lot more software. We are not especially better at figuring out what we want to build. So we're building more of it. The real question: are we producing good stuff, or are we just cleaning up the mess that was so easy to make yesterday?
+
+<figure>
+  <img src="/images/state/day1-03-instruction-budget.png" alt="A hand adjusting a dial on a bank of industrial gauges, one glowing red." />
+  <figcaption>The instruction budget, visualized. One gauge is warning; the others are running hot.</figcaption>
+</figure>
 
 [Dex Horthy](https://x.com/dexhorthy) of HumanLayer is, in my mind, pushing the state of the art on how to build AI software. He's originally known for "context engineering," and his last talk introduced the idea of the *dumb zone* — that around 40% of context capacity, the model's attention is spread too thin across the window and the agent starts making worse choices. This time he added two more ideas. First: there's an *instruction budget*, roughly 100–200 before a thinking model stops reliably following all of them. That's the answer to "why doesn't it follow my CLAUDE.md, why doesn't it do this, why doesn't it do that" — you've given it too many conflicting instructions and it's forgotten half of them. Second: he's walking back a lot of his own RPI (research-plan-implement) advice. His old line was "source code is the new machine code, don't read the code" — something I've basically subscribed to for the last four months. But in practice, reviewing the plan is equivalent to reviewing the code, which means you end up doing both. So the new advice is: don't review the plan, review the output. This talk made me feel how differently the forces resolve when they move. He ping-ponged from his own prior position. We're circling the answer. It isn't settled.
 
@@ -41,6 +56,11 @@ The other force that's shifting is the skills-vs-MCP question. MCPs are great in
 I've personally moved away from MCPs toward skills, and now I'm moving back toward MCPs as a wrapper around skills — using MCPs as a security boundary. [Kent Dodds](https://x.com/kentcdodds)' Kody demo made this concrete: inside an execution environment you only hand the agent functions you control, and in a service-worker-like pattern you can intercept every fetch to check whether a secret is being exfiltrated to a domain it shouldn't be. That's not "let the agent write anything" — it's "let the agent write code inside a sandbox we can audit at the syscall." A third way between skills, MCPs, and tool calls. The shape of that is still forming.
 
 On taste: we're starting to see software that's written for agents, which means understanding what agents want, what they like, what they respond well to. A code-execution playground is a shift in that direction. It's not what you'd hand a human — here's a bunch of method calls, go execute — but it is the kind of interface an agent likes.
+
+<figure class="figure-span">
+  <img src="/images/state/day1-04-gen3.png" alt="A figure climbs a staircase of ascending industrial blocks, the tallest rendered in solid vermilion." />
+  <figcaption>Ben Davis's three generations. Gen 3 is where the unit of shipping has moved.</figcaption>
+</figure>
 
 The final talk of the day was one I had sideways anticipation about — partly dreading, partly wanting to see. [Ben Davis](https://x.com/davis7) on "You're Using the Wrong AI SDK." I've built a lot of stuff on top of the Vercel AI SDK, so I was paying close attention. His frame: three generations. **Gen 1** is the wrapper generation — the raw OpenAI SDK, BAML. **Gen 2** is the tool-call generation — Vercel AI SDK style, wrap the agent loop around typed tool schemas. **Gen 3** is the coding-agent SDKs — Pi, OpenCode, the Claude Code SDK — where the primitives aren't tool schemas anymore, they're a whole coding agent: a filesystem, shell access, artifacts, code it can download and run. The interesting claim is that the unit of shipping is increasingly Gen 3. Your "program" isn't code plus tools anymore; it's a directory of markdown skill files, a few helper shell functions, and a coding agent as the runtime. That's worth going deeper into.
 

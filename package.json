@@ -8,6 +8,8 @@
     "dev": "astro dev",
     "start": "astro dev",
     "build": "astro build",
+    "build:pdfs": "astro build && node scripts/build-pdfs.mjs",
+    "pdfs": "node scripts/build-pdfs.mjs",
     "preview": "astro preview",
     "astro": "astro"
   },

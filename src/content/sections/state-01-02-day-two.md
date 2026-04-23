@@ -28,6 +28,11 @@ sources:
     slug: chieng-cerebras
 ---
 
+<figure class="figure-span">
+  <img src="/images/state/day2-01-three-populations.png" alt="A junior engineer, a business executive, and a robot — each at a workbench, each learning." />
+  <figcaption>§ II · Three populations, one verb. People, companies, and agents are all learning agency at the same moment.</figcaption>
+</figure>
+
 Day 2 at AIE Miami had a through-line I didn't fully see until the end of the day. It's about agency — but agency in three different senses, for three different populations, all happening at once.
 
 **People** are learning agency over agents — how to delegate, how to review at a higher layer of abstraction, how to write in English well enough that an agent actually does the thing.
@@ -39,6 +44,11 @@ Day 2 at AIE Miami had a through-line I didn't fully see until the end of the da
 The shape of each one kept coming back to a rule of threes. Every binary the industry has been arguing about collapsed into a third path, and in every case the third path was the interesting one. Yesterday we saw that MCP-versus-skills debate start to crack. Today the same shape showed up everywhere. Three of those three-way frames hardened enough to name.
 
 ## People: slop-cannon, skill issue, and learned agency
+
+<figure>
+  <img src="/images/state/day2-02-plan-review.png" alt="A senior engineer leans over a junior's desk to mark up a written plan with a red pencil." />
+  <figcaption>The spec document as mentorship surface. Review before code, not after.</figcaption>
+</figure>
 
 David House from G2i gave the best talk of the conference on this, drawn from five engineer case studies on a real project. He came from a mental-health counseling background before becoming an engineering manager, which shows — his frame is that successful agent adoption isn't about skill and it isn't about the framework. It's about internalization. Engineers start reactive, disempowered, reacting to output they don't trust, and they end self-directed. They learn agency.
 
@@ -61,6 +71,11 @@ The model I came up with is professional licensees — the teachers at a school 
 At the very least, people understand token consumption. If you were to tell them this is a token factory and it costs you this much to work, that's something they can grasp.
 
 Dave's whole talk is the product-side companion to this. GitHub commits per year are going vertical — not because humans got 10× more productive, because agents are the committers. Friction compounds at scale. Per-seat pricing is dead the second a "seat" is an agent. Your API access page can't say "contact sales" anymore; outcome-based pricing is self-justifying, flat-rate subscriptions are easy to cancel. Your error messages need a `next_actions` field. Your pricing should live at `/pricing.md` as well as `/pricing`. Your content should be responsive to the reader, and the reader no longer has eyes.
+
+<figure>
+  <img src="/images/state/day2-03-macmini-van.png" alt="A Mac Mini glowing on a desk inside a window-cleaning van at dusk, squeegees hanging." />
+  <figcaption>The window cleaner's MacMini in Jupiter, Florida. Not on Tim Cook's bingo card.</figcaption>
+</figure>
 
 The echo from Rick Blalock at Agentuity was loud. A year ago he was selling a developer platform. Now he's explicit that the coding agent is a universal primitive — not just for developers. He told two stories that stuck with me. A 60-year-old manufacturing-company founder in Texas replaced a ten-thousand-dollar-a-month HubSpot subscription by spending three months having a coding agent build the replacement. A 24-year-old window cleaner in Jupiter, Florida runs his marketing, sales, and estimating off coding agents. Both of them bought MacMinis specifically to run the agents. Tim Cook didn't have that on his bingo card.
 
@@ -87,6 +102,11 @@ All three threes are the same shape — a population learning agency. People lea
 That's what made Tuesday feel different from Monday. Monday was patterns breaking. Tuesday was three new patterns hardening at the same time, and every one of them named a third path where there had only been a binary. Every one of them works because someone is learning agency on both sides of the interface.
 
 ## The fourth three, forming
+
+<figure class="figure-span">
+  <img src="/images/state/day2-04-local-shield.png" alt="A laptop on a desk ringed by a protective vermilion circle, a cluttered server room faint in the background." />
+  <figcaption>The Linux moment for AI, imagined: the inference that's yours, enclosed, not rented.</figcaption>
+</figure>
 
 One more thing caught my attention that I didn't see on stage but had in the hallway. Running local models — so-called "open source," but fundamentally what I mean is models that run at the cost of electricity, or run without a network.
 

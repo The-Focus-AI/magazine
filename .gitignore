@@ -7,3 +7,5 @@ dist/
 !.env.example
 *.log
 .reviews/
+.env.local
+dist/*.pdf

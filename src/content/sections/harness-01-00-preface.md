@@ -7,6 +7,11 @@ summary: "Ben Davis stood on stage in Miami and said we've been writing AI softw
 draft: true
 ---
 
+<figure class="figure-span">
+  <img src="/images/harness/harness-01-opener.png" alt="Three apparatuses in a row — a small wrapper tool, a mid-size tool bench with hands, a full machine with a figure inside." />
+  <figcaption>Preface · The three apparatuses. Gen 1, Gen 2, Gen 3. The unit of shipping is on the right.</figcaption>
+</figure>
+
 Ben Davis stood on stage at AI Engineer Miami and said we've been writing AI software wrong for three years. His frame: three generations.
 
 **Gen 1** — the wrapper. The raw OpenAI SDK. BAML. You send a prompt, you get tokens back, you parse them. Everything else is yours.

@@ -7,6 +7,11 @@ summary: "Laurie Voss ran 500 evaluations. The MCP-vs-skills debate resolved wit
 draft: true
 ---
 
+<figure class="figure-span">
+  <img src="/images/wire/wire-01-opener.png" alt="Three nodes arranged in a triangle — a bronze-filled circle, an open circle, a petrol-filled square — connected by many solid and dashed signal paths." />
+  <figcaption>Preface · Three nodes, many paths. MCP, skills, code mode.</figcaption>
+</figure>
+
 Laurie Voss from Arize ran the evaluation the internet had been arguing about for months. Five hundred test runs. Three arms: MCP, a long skill file, a short skill file. Plus a baseline with no tool context at all.
 
 Correctness was a wash. All arms landed in the high 80s.
