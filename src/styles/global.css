@@ -1,0 +1,299 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   THE FOCUS.AI · Labs Design System
+   Bell Labs / RAND Corporation research memorandum aesthetic
+   ═══════════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* Labs palette */
+  --paper: #f3f2ea;
+  --void: #1a1a1a;
+  --rand-blue: #0055aa;
+  --alert-red: #d93025;
+  --surface: #e6e4dc;
+  --page-bg: #e8e6df;
+  --inactive-tab: #d6d4ce;
+  --rule-subtle: rgba(26, 26, 26, 0.12);
+  --rule-faint: rgba(26, 26, 26, 0.06);
+
+  /* Vertical accent colors — these override the default accent per-issue.
+     Each is a restrained hue that reads as "spot color on a research memo". */
+  --state-accent: #7a5c3a;      /* oxblood / manila */
+  --surface-accent: #c3471d;    /* vermilion */
+  --runtime-accent: #0055aa;    /* rand-blue */
+  --harness-accent: #2d5a3d;    /* forest */
+  --local-accent: #5a3d8a;      /* institutional violet */
+  --wire-accent: #a65a1c;       /* bronze */
+
+  /* Type */
+  --sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --mono: 'Courier Prime', 'Courier New', monospace;
+  --serif: 'Source Serif 4', Georgia, serif;
+
+  /* Motion */
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--page-bg);
+  color: var(--void);
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: 'kern' 1, 'liga' 1;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Baseline grid background — subtle ledger lines for that printed-paper feel */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 31px,
+    rgba(26, 26, 26, 0.025) 31px,
+    rgba(26, 26, 26, 0.025) 32px
+  );
+  background-size: 100% 32px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+main {
+  flex: 1;
+  position: relative;
+  z-index: 1;
+}
+
+/* ─── Typography ─────────────────────────────────────────────────────── */
+
+a {
+  color: var(--rand-blue);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  transition: color 150ms var(--ease);
+}
+
+a:hover {
+  color: var(--alert-red);
+}
+
+::selection {
+  background: var(--void);
+  color: var(--paper);
+}
+
+/* ─── Utility classes (Labs vocabulary) ──────────────────────────────── */
+
+.mono {
+  font-family: var(--mono);
+  letter-spacing: 0.02em;
+}
+
+.uppercase-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.spot-number {
+  font-family: var(--mono);
+  color: var(--alert-red);
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.05em;
+}
+
+/* Offset shadow — Labs signature "floating document" */
+.offset-shadow {
+  box-shadow: 12px 12px 0 0 rgba(26, 26, 26, 0.12);
+}
+
+/* ─── Site chrome ────────────────────────────────────────────────────── */
+
+.site-header {
+  background: var(--paper);
+  border-bottom: 1px solid var(--void);
+  position: relative;
+  z-index: 10;
+}
+
+.site-header-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2rem;
+}
+
+.wordmark {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  text-decoration: none;
+  color: var(--void);
+}
+
+.wordmark-block {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  background: var(--rand-blue);
+  transform: translateY(1px);
+}
+
+.wordmark-text {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+}
+
+.wordmark-divider {
+  font-family: var(--mono);
+  color: var(--alert-red);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.wordmark-sub {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--void);
+  opacity: 0.75;
+}
+
+.site-nav {
+  display: flex;
+  gap: 2rem;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.site-nav a {
+  color: var(--void);
+  text-decoration: none;
+  position: relative;
+  padding-bottom: 2px;
+}
+
+.site-nav a:hover {
+  color: var(--rand-blue);
+}
+
+.site-nav a::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 0;
+  height: 1px;
+  background: var(--rand-blue);
+  transition: width 200ms var(--ease);
+}
+
+.site-nav a:hover::after {
+  width: 100%;
+}
+
+/* ─── Footer ──────────────────────────────────────────────────────────── */
+
+.site-footer {
+  border-top: 1px solid var(--void);
+  background: var(--paper);
+  margin-top: 6rem;
+  position: relative;
+  z-index: 1;
+}
+
+.site-footer-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2rem;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(26, 26, 26, 0.65);
+}
+
+.site-footer-inner a {
+  color: rgba(26, 26, 26, 0.65);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+}
+
+.site-footer-inner a:hover {
+  color: var(--rand-blue);
+  border-bottom-color: var(--rand-blue);
+}
+
+/* ─── Animations ─────────────────────────────────────────────────────── */
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  opacity: 0;
+  animation: fadeInUp 600ms var(--ease) forwards;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .site-header-inner {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1rem 1.25rem;
+    gap: 1rem;
+  }
+
+  .site-nav {
+    gap: 1.25rem;
+  }
+
+  .site-footer-inner {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1.5rem 1.25rem;
+  }
+}

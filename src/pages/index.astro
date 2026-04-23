@@ -3,7 +3,7 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 
 const issues = (await getCollection('issues')).sort((a, b) => {
-  // STATE first, then by publish date desc
+  // STATE first (the main report), then architecture issues by published date desc
   if (a.data.vertical === 'state') return -1;
   if (b.data.vertical === 'state') return 1;
   return b.data.published.getTime() - a.data.published.getTime();
@@ -21,198 +21,557 @@ const verticalLabel = {
 const verticalDescription = {
   state: 'Reports on the state of AI engineering.',
   surface: 'On presentation layers, UI protocols, and rendering.',
-  runtime: 'On machines that think — and the substrates that hold them.',
-  harness: 'On the builder\'s practice of working with agent-native SDKs.',
+  runtime: 'On machines that think, and the substrates that hold them.',
+  harness: "On the builder's practice of working with agent-native SDKs.",
   local: 'On inference sovereignty — hosted, self-hosted, on-device.',
   wire: 'On how agents access capability.',
 };
+
+const verticalSymbol = {
+  state: '◉',      // filled circle — the synthesis
+  surface: '▤',    // UI frame
+  runtime: '▣',    // hardened square
+  harness: '▦',    // structured
+  local: '▨',      // distributed
+  wire: '▥',       // wired
+};
+
+const thisYear = new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' }).toUpperCase();
+
+// Count only non-draft issues for the index metadata
+const publishedCount = issues.filter((i) => !i.data.draft).length;
+const totalCount = issues.length;
 ---
-<BaseLayout title="The Focus.AI · Magazines">
-  <section class="hero">
-    <h1>The Focus.AI Magazines</h1>
-    <p class="dek">
-      A publication line on the state and shape of AI engineering. Six verticals. Reports and reference.
-    </p>
+<BaseLayout title="THEFOCUS.AI · Magazines">
+  <section class="cover">
+    <div class="cover-inner">
+      <div class="cover-masthead">
+        <div class="masthead-col">
+          <div class="masthead-label">Document No.</div>
+          <div class="masthead-value mono">RM–2026–01</div>
+        </div>
+        <div class="masthead-col">
+          <div class="masthead-label">Series</div>
+          <div class="masthead-value mono">RESEARCH MEMORANDUM</div>
+        </div>
+        <div class="masthead-col">
+          <div class="masthead-label">Issued</div>
+          <div class="masthead-value mono">{thisYear}</div>
+        </div>
+        <div class="masthead-col">
+          <div class="masthead-label">Volume</div>
+          <div class="masthead-value mono">I</div>
+        </div>
+      </div>
+
+      <div class="cover-rule"></div>
+
+      <h1 class="cover-title">
+        <span class="cover-title-eyebrow mono">THE FOCUS.AI ·&nbsp;MAGAZINES</span>
+        <span class="cover-title-main">
+          Research<br />
+          Memoranda on<br />
+          <span class="cover-title-accent">Agent Engineering</span>
+        </span>
+      </h1>
+
+      <p class="cover-lede">
+        A publication line distilling signal from the noise of an industry
+        rearranging itself in real time.
+        Six verticals. <span class="mono">{publishedCount}</span> of
+        <span class="mono">{totalCount}</span> issues available.
+      </p>
+
+      <div class="cover-meta">
+        <div class="cover-meta-col">
+          <div class="uppercase-label">Reportage</div>
+          <p class="cover-meta-text">
+            <strong>STATE</strong> — conference reports and synthesis pieces,
+            written in the editor's voice. Named speakers, situated arguments.
+          </p>
+        </div>
+        <div class="cover-meta-col">
+          <div class="uppercase-label">Reference</div>
+          <p class="cover-meta-text">
+            <strong>SURFACE · RUNTIME · HARNESS · LOCAL · WIRE</strong> —
+            architecture explainers. Declarative, system-focused, heavily
+            cited. Meant to be returned to.
+          </p>
+        </div>
+      </div>
+    </div>
   </section>
 
-  <section class="verticals">
-    <h2>Current Issues</h2>
-    <div class="grid">
-      {issues.map((issue) => (
-        <a class={`card voice-${issue.data.voice}`} href={`/${issue.data.vertical}-${String(issue.data.issue_number).padStart(2, '0')}/`} style={`--card-accent: ${issue.data.cover_color ?? '#c4563c'};`}>
-          <div class="card-head">
-            <span class="vertical">{verticalLabel[issue.data.vertical]}</span>
-            <span class="issue-number">№ {String(issue.data.issue_number).padStart(2, '0')}</span>
-          </div>
-          <div class="card-body">
-            <h3>{issue.data.issue_title}</h3>
-            <p class="subtitle">{issue.data.subtitle}</p>
-            <p class="tagline">{issue.data.tagline}</p>
-          </div>
-          <div class="card-foot">
-            <span class="meta">{verticalDescription[issue.data.vertical]}</span>
-            {issue.data.draft && <span class="draft">In progress</span>}
-          </div>
-        </a>
-      ))}
+  <section class="catalog">
+    <div class="catalog-header">
+      <div class="catalog-label uppercase-label">
+        <span class="spot-number">§</span>&nbsp;Current Issues
+      </div>
+      <div class="catalog-count mono">
+        {issues.length.toString().padStart(2, '0')} / {issues.length.toString().padStart(2, '0')}
+      </div>
+    </div>
+
+    <ol class="issue-list">
+      {issues.map((issue, idx) => {
+        const num = String(idx + 1).padStart(2, '0');
+        const issueNum = String(issue.data.issue_number).padStart(2, '0');
+        return (
+          <li class={`issue-row voice-${issue.data.voice}`}>
+            <a href={`/${issue.slug}/`} class="issue-link">
+              <div class="issue-index">
+                <span class="spot-number">{num}</span>
+              </div>
+
+              <div class="issue-symbol" aria-hidden="true" style={`--v-accent: var(--${issue.data.vertical}-accent);`}>
+                {verticalSymbol[issue.data.vertical]}
+              </div>
+
+              <div class="issue-meta">
+                <div class="issue-vertical mono">{verticalLabel[issue.data.vertical]} · №&nbsp;{issueNum}</div>
+                <div class="issue-published mono">
+                  {issue.data.draft
+                    ? 'IN PROGRESS'
+                    : issue.data.published.toLocaleDateString('en-US', { month: 'short', year: 'numeric' }).toUpperCase()}
+                </div>
+              </div>
+
+              <div class="issue-body">
+                <h3 class="issue-title">{issue.data.issue_title}</h3>
+                <p class="issue-subtitle">{issue.data.subtitle}</p>
+                <p class="issue-tagline">"{issue.data.tagline}"</p>
+                <p class="issue-vertical-desc mono">{verticalDescription[issue.data.vertical]}</p>
+              </div>
+
+              <div class="issue-arrow" aria-hidden="true">
+                <span>READ</span>
+                <svg width="20" height="12" viewBox="0 0 20 12" fill="none">
+                  <path d="M14 1L19 6L14 11M19 6H0" stroke="currentColor" stroke-width="1.5" />
+                </svg>
+              </div>
+            </a>
+          </li>
+        );
+      })}
+    </ol>
+  </section>
+
+  <section class="colophon">
+    <div class="colophon-inner">
+      <div class="colophon-block">
+        <div class="uppercase-label">On Voice</div>
+        <p>
+          We use two registers. <em>Reportage</em> is the editor's voice —
+          first-person, named, situated. <em>Architecture</em> is the house
+          voice — declarative, third-person, heavily cited, meant to be
+          returned to. Each issue declares which it uses.
+        </p>
+      </div>
+      <div class="colophon-block">
+        <div class="uppercase-label">On Structure</div>
+        <p>
+          Six verticals, each ongoing. New issues drop without fanfare.
+          Cross-references connect the reference issues into a single atlas;
+          STATE synthesizes across the atlas.
+        </p>
+      </div>
+      <div class="colophon-block">
+        <div class="uppercase-label">On Chat</div>
+        <p>
+          Every issue, section, source, and concept lives as markdown in a
+          single repository. An <a href="/chat">MCP chat interface</a> reads
+          the same files we do. Connect your own client; or use ours.
+        </p>
+      </div>
     </div>
   </section>
 
   <style>
-    .hero {
-      padding: 5rem 3rem 3rem;
-      max-width: 900px;
+    /* ══ Cover (hero) ═════════════════════════════════════════════════ */
+    .cover {
+      background: var(--paper);
+      border-bottom: 1px solid var(--void);
+      padding: 3rem 0 5rem;
+      position: relative;
     }
 
-    .hero h1 {
-      font-family: var(--serif);
-      font-weight: 300;
-      font-size: clamp(2.5rem, 6vw, 4.5rem);
-      line-height: 1;
-      margin: 0 0 1.5rem;
-      letter-spacing: -0.02em;
+    .cover-inner {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 2rem;
     }
 
-    .hero .dek {
-      font-family: var(--serif);
-      font-size: 1.5rem;
-      font-weight: 300;
-      line-height: 1.4;
-      color: var(--muted);
-      margin: 0;
-      max-width: 640px;
+    .cover-masthead {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+      padding-bottom: 1.25rem;
+      margin-bottom: 0;
     }
 
-    .verticals {
-      padding: 3rem 3rem 5rem;
+    .masthead-col {
+      border-left: 1px solid var(--void);
+      padding-left: 1rem;
     }
 
-    .verticals h2 {
-      font-family: var(--sans);
-      font-weight: 500;
-      font-size: 0.85rem;
+    .masthead-col:first-child {
+      border-left-width: 3px;
+      border-left-color: var(--rand-blue);
+    }
+
+    .masthead-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 400;
       letter-spacing: 0.15em;
       text-transform: uppercase;
-      color: var(--muted);
-      margin: 0 0 2rem;
-      padding-bottom: 1rem;
-      border-bottom: 1px solid var(--rule);
+      color: rgba(26, 26, 26, 0.6);
+      margin-bottom: 0.35rem;
     }
 
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-      gap: 1.5rem;
+    .masthead-value {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
     }
 
-    .card {
-      display: flex;
-      flex-direction: column;
-      padding: 2rem;
-      background: var(--paper-dim);
-      border: 1px solid var(--rule);
-      border-radius: 0;
-      text-decoration: none;
-      color: var(--ink);
-      transition: transform 150ms ease, background 150ms ease;
-      min-height: 320px;
+    .cover-rule {
+      height: 4px;
+      background: var(--void);
       position: relative;
-      overflow: hidden;
+      margin-bottom: 3rem;
     }
 
-    .card::before {
+    .cover-rule::after {
       content: '';
       position: absolute;
       top: 0;
       left: 0;
-      width: 8px;
+      width: 120px;
       height: 100%;
-      background: var(--card-accent);
+      background: var(--rand-blue);
     }
 
-    .card:hover {
-      transform: translateY(-2px);
-      background: #fff;
+    .cover-title {
+      margin: 0 0 3rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
     }
 
-    .card-head {
+    .cover-title-eyebrow {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.25em;
+      color: var(--alert-red);
+    }
+
+    .cover-title-main {
+      font-family: var(--sans);
+      font-weight: 900;
+      font-size: clamp(3rem, 8vw, 7rem);
+      line-height: 0.88;
+      letter-spacing: -0.035em;
+      color: var(--void);
+    }
+
+    .cover-title-accent {
+      color: var(--rand-blue);
+    }
+
+    .cover-lede {
+      font-family: var(--sans);
+      font-size: clamp(1.15rem, 1.6vw, 1.4rem);
+      line-height: 1.45;
+      font-weight: 400;
+      color: var(--void);
+      max-width: 760px;
+      margin: 0 0 4rem;
+      border-left: 3px solid var(--alert-red);
+      padding: 0.25rem 0 0.25rem 1.5rem;
+    }
+
+    .cover-meta {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 3rem;
+      padding-top: 3rem;
+      border-top: 1px dashed var(--rule-subtle);
+      max-width: 1100px;
+    }
+
+    .cover-meta-col {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .cover-meta-text {
+      font-size: 15px;
+      line-height: 1.6;
+      margin: 0;
+      color: var(--void);
+    }
+
+    .cover-meta-text strong {
+      font-family: var(--mono);
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: 0.08em;
+    }
+
+    /* ══ Catalog (issue list) ═════════════════════════════════════════ */
+    .catalog {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 5rem 2rem 3rem;
+    }
+
+    .catalog-header {
       display: flex;
       justify-content: space-between;
-      font-family: var(--sans);
-      font-size: 0.78rem;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 2rem;
+      align-items: baseline;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid var(--void);
+      margin-bottom: 0;
     }
 
-    .card-head .vertical {
-      font-weight: 600;
-      color: var(--card-accent);
+    .catalog-label {
+      font-size: 13px;
     }
 
-    .card-body {
-      flex: 1;
+    .catalog-count {
+      font-size: 11px;
+      color: rgba(26, 26, 26, 0.55);
     }
 
-    .card h3 {
-      font-family: var(--serif);
-      font-weight: 400;
-      font-size: 1.75rem;
-      line-height: 1.1;
-      margin: 0 0 0.5rem;
-      letter-spacing: -0.01em;
-    }
-
-    .card .subtitle {
-      font-family: var(--serif);
-      font-size: 1rem;
-      font-style: italic;
-      color: var(--muted);
-      margin: 0 0 1.5rem;
-    }
-
-    .card .tagline {
-      font-family: var(--serif);
-      font-size: 1.05rem;
-      line-height: 1.45;
+    .issue-list {
+      list-style: none;
+      padding: 0;
       margin: 0;
     }
 
-    .card-foot {
+    .issue-row {
+      border-bottom: 1px solid var(--rule-subtle);
+      position: relative;
+      transition: background 200ms var(--ease);
+    }
+
+    .issue-row:hover {
+      background: rgba(0, 85, 170, 0.03);
+    }
+
+    .issue-link {
+      display: grid;
+      grid-template-columns: 60px 60px 180px 1fr 120px;
+      gap: 1.5rem;
+      align-items: start;
+      padding: 2.25rem 1rem;
+      text-decoration: none;
+      color: var(--void);
+      transition: padding 200ms var(--ease);
+    }
+
+    .issue-row:hover .issue-link {
+      padding-left: 1.75rem;
+    }
+
+    .issue-index {
+      font-size: 12px;
+      padding-top: 0.35rem;
+      opacity: 0.65;
+    }
+
+    .issue-symbol {
+      font-size: 2.5rem;
+      line-height: 1;
+      color: var(--v-accent);
+      padding-top: 0.1rem;
+      transition: transform 300ms var(--ease);
+    }
+
+    .issue-row:hover .issue-symbol {
+      transform: rotate(8deg) scale(1.08);
+    }
+
+    .issue-meta {
       display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      margin-top: 1.5rem;
-      padding-top: 1rem;
-      border-top: 1px solid rgba(26, 26, 26, 0.15);
+      flex-direction: column;
+      gap: 0.35rem;
+      padding-top: 0.35rem;
     }
 
-    .card-foot .meta {
-      font-family: var(--sans);
-      font-size: 0.78rem;
-      color: var(--muted);
-      max-width: 70%;
-    }
-
-    .draft {
-      font-family: var(--sans);
-      font-size: 0.7rem;
+    .issue-vertical {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
       text-transform: uppercase;
-      letter-spacing: 0.15em;
-      padding: 0.25rem 0.5rem;
-      background: var(--ink);
-      color: var(--paper);
-      font-weight: 500;
+      color: var(--void);
     }
 
-    @media (max-width: 640px) {
-      .hero {
-        padding: 3rem 1.5rem 2rem;
+    .issue-published {
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: rgba(26, 26, 26, 0.55);
+    }
+
+    .voice-reportage .issue-published {
+      color: var(--alert-red);
+      font-weight: 700;
+    }
+
+    .issue-body {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      max-width: 620px;
+    }
+
+    .issue-title {
+      font-family: var(--sans);
+      font-weight: 900;
+      font-size: clamp(1.5rem, 2.1vw, 2rem);
+      line-height: 1.05;
+      letter-spacing: -0.015em;
+      margin: 0;
+      color: var(--void);
+    }
+
+    .issue-subtitle {
+      font-size: 15px;
+      font-weight: 400;
+      line-height: 1.4;
+      color: rgba(26, 26, 26, 0.7);
+      margin: 0;
+    }
+
+    .issue-tagline {
+      font-size: 14px;
+      font-style: italic;
+      line-height: 1.45;
+      color: var(--void);
+      margin: 0.35rem 0 0.5rem;
+      padding-left: 0.85rem;
+      border-left: 2px solid var(--rand-blue);
+    }
+
+    .voice-reportage .issue-tagline {
+      border-left-color: var(--alert-red);
+    }
+
+    .issue-vertical-desc {
+      font-size: 11px;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgba(26, 26, 26, 0.55);
+      margin: 0;
+    }
+
+    .issue-arrow {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      justify-content: flex-end;
+      align-self: center;
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--void);
+      opacity: 0.5;
+      transition: opacity 200ms var(--ease), transform 200ms var(--ease);
+    }
+
+    .issue-row:hover .issue-arrow {
+      opacity: 1;
+      color: var(--rand-blue);
+      transform: translateX(4px);
+    }
+
+    /* ══ Colophon ═════════════════════════════════════════════════════ */
+    .colophon {
+      max-width: 1400px;
+      margin: 4rem auto 0;
+      padding: 3rem 2rem 2rem;
+      border-top: 1px solid var(--void);
+    }
+
+    .colophon-inner {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 3rem;
+    }
+
+    .colophon-block .uppercase-label {
+      margin-bottom: 0.75rem;
+      color: var(--alert-red);
+    }
+
+    .colophon-block p {
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--void);
+      margin: 0;
+    }
+
+    .colophon-block em {
+      font-style: italic;
+      color: var(--rand-blue);
+    }
+
+    /* ══ Responsive ═══════════════════════════════════════════════════ */
+    @media (max-width: 960px) {
+      .cover {
+        padding: 2rem 0 3.5rem;
       }
 
-      .verticals {
-        padding: 2rem 1.5rem 3rem;
+      .cover-masthead {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.75rem 1rem;
+      }
+
+      .cover-meta {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+
+      .issue-link {
+        grid-template-columns: 40px 1fr;
+        gap: 1rem;
+        padding: 1.75rem 0.5rem;
+      }
+
+      .issue-symbol,
+      .issue-meta,
+      .issue-arrow {
+        grid-column: 2;
+      }
+
+      .issue-index {
+        grid-row: 1 / span 4;
+      }
+
+      .issue-body {
+        grid-column: 2;
+      }
+
+      .colophon-inner {
+        grid-template-columns: 1fr;
+        gap: 1.75rem;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .cover-inner,
+      .catalog,
+      .colophon {
+        padding-left: 1.25rem;
+        padding-right: 1.25rem;
       }
     }
   </style>

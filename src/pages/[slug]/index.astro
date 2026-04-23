@@ -1,5 +1,5 @@
 ---
-import { getCollection, getEntry } from 'astro:content';
+import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 
 export async function getStaticPaths() {
@@ -27,236 +27,615 @@ const verticalLabel = {
   wire: 'WIRE',
 };
 
-const publishedString = issue.data.published.toLocaleDateString('en-US', {
-  month: 'long',
-  year: 'numeric',
-});
+const publishedString = issue.data.published
+  .toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
+  .toUpperCase();
+
+const issueNumPadded = String(issue.data.issue_number).padStart(2, '0');
+const vertical = issue.data.vertical;
+const voiceLabel = issue.data.voice === 'reportage' ? 'REPORTAGE' : 'ARCHITECTURE';
 ---
-<BaseLayout title={`${verticalLabel[issue.data.vertical]} № ${issue.data.issue_number} · ${issue.data.issue_title}`}>
-  <article class="issue-cover" style={`--accent: ${issue.data.cover_color ?? '#c4563c'};`}>
-    <div class="masthead">
-      <span class="vertical">{verticalLabel[issue.data.vertical]}</span>
-      <span class="divider">·</span>
-      <span class="issue-number">Issue № {String(issue.data.issue_number).padStart(2, '0')}</span>
-      <span class="divider">·</span>
-      <span class="published">{publishedString}</span>
-      {issue.data.draft && <span class="draft">In progress</span>}
+<BaseLayout title={`${verticalLabel[vertical]} № ${issueNumPadded} · ${issue.data.issue_title}`}>
+  <article class={`memo memo-${vertical} voice-${issue.data.voice}`}>
+    <!-- Document sheet -->
+    <div class="memo-sheet offset-shadow">
+      <!-- Document binding strip (left edge) -->
+      <aside class="memo-binding" aria-hidden="true">
+        <div class="memo-binding-label">
+          {verticalLabel[vertical]} · № {issueNumPadded}
+        </div>
+      </aside>
+
+      <div class="memo-body">
+        <!-- Classification header -->
+        <header class="memo-header">
+          <div class="memo-header-row">
+            <div class="memo-field">
+              <div class="memo-field-label">Document No.</div>
+              <div class="memo-field-value">
+                {verticalLabel[vertical]}–{issueNumPadded}–{issue.data.published.getFullYear()}
+              </div>
+            </div>
+            <div class="memo-field">
+              <div class="memo-field-label">Series</div>
+              <div class="memo-field-value">{verticalLabel[vertical]}</div>
+            </div>
+            <div class="memo-field">
+              <div class="memo-field-label">Issue</div>
+              <div class="memo-field-value">№ {issueNumPadded}</div>
+            </div>
+            <div class="memo-field">
+              <div class="memo-field-label">Issued</div>
+              <div class="memo-field-value">{publishedString}</div>
+            </div>
+            <div class="memo-field">
+              <div class="memo-field-label">Voice</div>
+              <div class="memo-field-value accent">{voiceLabel}</div>
+            </div>
+            <div class="memo-field">
+              <div class="memo-field-label">Status</div>
+              <div class={`memo-field-value ${issue.data.draft ? 'draft' : 'ready'}`}>
+                {issue.data.draft ? 'IN PROGRESS' : 'PUBLISHED'}
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <!-- Classification rule -->
+        <div class="memo-rule"></div>
+
+        <!-- Title block -->
+        <section class="memo-titleblock">
+          <p class="memo-eyebrow">
+            <span class="spot-number">§</span>&nbsp;
+            {verticalLabel[vertical]}&nbsp;·&nbsp;ISSUE NO.&nbsp;{issueNumPadded}
+          </p>
+          <h1 class="memo-title">{issue.data.issue_title}</h1>
+          <p class="memo-subtitle">{issue.data.subtitle}</p>
+
+          <p class="memo-tagline">"{issue.data.tagline}"</p>
+        </section>
+
+        <!-- Abstract / editorial summary -->
+        {issue.data.summary && (
+          <section class="memo-abstract">
+            <div class="memo-section-label">
+              <span class="spot-number">01</span>&nbsp;Abstract
+            </div>
+            <p>{issue.data.summary}</p>
+          </section>
+        )}
+
+        <!-- Editor's note / cover content (from the issue markdown body) -->
+        <section class="memo-editor-note">
+          <div class="memo-section-label">
+            <span class="spot-number">02</span>&nbsp;From the Cover
+          </div>
+          <div class="memo-prose">
+            <Content />
+          </div>
+        </section>
+
+        <!-- Table of Contents -->
+        {sections.length > 0 && (
+          <section class="memo-toc">
+            <div class="memo-section-label">
+              <span class="spot-number">03</span>&nbsp;Contents
+            </div>
+            <ol class="toc-list">
+              {sections.map((section, i) => {
+                const pageNum = String(i + 1).padStart(2, '0');
+                const sectionUrlSlug = section.slug.replace(`${issue.slug}-`, '');
+                return (
+                  <li class="toc-row">
+                    <a href={`/${issue.slug}/${sectionUrlSlug}/`} class="toc-link">
+                      <span class="toc-pg mono">{pageNum}</span>
+                      <span class="toc-marker mono">
+                        {section.data.section_marker ?? `§ ${section.data.section_number}`}
+                      </span>
+                      <span class="toc-title-wrap">
+                        <span class="toc-title">{section.data.title}</span>
+                        <span class="toc-summary">{section.data.summary}</span>
+                      </span>
+                      <span class="toc-dots" aria-hidden="true"></span>
+                      <span class="toc-arrow" aria-hidden="true">→</span>
+                    </a>
+                  </li>
+                );
+              })}
+            </ol>
+          </section>
+        )}
+
+        <!-- Cross-references -->
+        {issue.data.cross_refs && issue.data.cross_refs.length > 0 && (
+          <section class="memo-xrefs">
+            <div class="memo-section-label">
+              <span class="spot-number">04</span>&nbsp;Cross-References
+            </div>
+            <ul class="xref-list">
+              {issue.data.cross_refs.map((ref) => (
+                <li>
+                  <a
+                    href={`/${ref.vertical}-${String(ref.issue).padStart(2, '0')}/`}
+                    class="xref-link"
+                  >
+                    <span class="xref-vertical mono">
+                      {verticalLabel[ref.vertical]} · №&nbsp;{String(ref.issue).padStart(2, '0')}
+                    </span>
+                    <span class="xref-reason">{ref.reason}</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+
+        <!-- Return link -->
+        <nav class="memo-return">
+          <a href="/" class="memo-return-link mono">← Back to issues</a>
+        </nav>
+      </div>
     </div>
-
-    <h1>{issue.data.issue_title}</h1>
-    <p class="subtitle">{issue.data.subtitle}</p>
-    <p class="tagline">{issue.data.tagline}</p>
-
-    <div class="cover-content">
-      <Content />
-    </div>
-
-    {sections.length > 0 && (
-      <section class="toc">
-        <h2>Table of Contents</h2>
-        <ol>
-          {sections.map((section) => (
-            <li>
-              <a href={`/${issue.slug}/${section.slug.replace(`${issue.slug}-`, '')}/`}>
-                <span class="marker">{section.data.section_marker ?? `§ ${section.data.section_number}`}</span>
-                <span class="title">{section.data.title}</span>
-              </a>
-              <p class="section-summary">{section.data.summary}</p>
-            </li>
-          ))}
-        </ol>
-      </section>
-    )}
-
-    {issue.data.cross_refs && issue.data.cross_refs.length > 0 && (
-      <section class="cross-refs">
-        <h2>Cross-references</h2>
-        <ul>
-          {issue.data.cross_refs.map((ref) => (
-            <li>
-              <a href={`/${ref.vertical}-${String(ref.issue).padStart(2, '0')}/`}>
-                <strong>{verticalLabel[ref.vertical]} № {String(ref.issue).padStart(2, '0')}</strong>
-              </a>
-              — {ref.reason}
-            </li>
-          ))}
-        </ul>
-      </section>
-    )}
   </article>
 
-  <style>
-    .issue-cover {
-      max-width: 760px;
+  <style define:vars={{ verticalAccent: `var(--${vertical}-accent)` }}>
+    /* ══ Page wrapper ══════════════════════════════════════════════════ */
+    .memo {
+      padding: 3rem 2rem 5rem;
+      max-width: 1200px;
       margin: 0 auto;
-      padding: 4rem 3rem 6rem;
     }
 
-    .masthead {
+    /* ══ Document sheet ═══════════════════════════════════════════════ */
+    .memo-sheet {
+      background: var(--paper);
+      border: 1px solid var(--void);
+      display: grid;
+      grid-template-columns: 56px 1fr;
+    }
+
+    /* ══ Binding strip ════════════════════════════════════════════════ */
+    .memo-binding {
+      background: var(--verticalAccent);
+      border-right: 1px solid var(--void);
       display: flex;
-      gap: 0.75rem;
-      align-items: center;
-      font-family: var(--sans);
-      font-size: 0.8rem;
-      letter-spacing: 0.12em;
+      align-items: flex-end;
+      justify-content: center;
+      padding: 2rem 0.5rem;
+      position: relative;
+    }
+
+    .memo-binding::before,
+    .memo-binding::after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--paper);
+      box-shadow: inset 0 0 0 1px rgba(26, 26, 26, 0.25);
+    }
+
+    .memo-binding::before { top: 1.5rem; }
+    .memo-binding::after { top: 4.25rem; }
+
+    .memo-binding-label {
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.3em;
       text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 3rem;
-      padding-bottom: 1rem;
-      border-bottom: 2px solid var(--accent);
-      flex-wrap: wrap;
+      color: #fff;
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
     }
 
-    .masthead .vertical {
-      color: var(--accent);
-      font-weight: 600;
-    }
-
-    .masthead .divider {
-      color: var(--muted);
-    }
-
-    .draft {
-      margin-left: auto;
-      font-size: 0.7rem;
-      padding: 0.2rem 0.5rem;
-      background: var(--ink);
+    .memo-state .memo-binding-label {
       color: var(--paper);
     }
 
-    .issue-cover h1 {
-      font-family: var(--serif);
-      font-weight: 300;
-      font-size: clamp(2.5rem, 6vw, 4rem);
-      line-height: 1;
-      letter-spacing: -0.02em;
-      margin: 0 0 1rem;
+    /* ══ Body ═════════════════════════════════════════════════════════ */
+    .memo-body {
+      padding: 3rem clamp(1.75rem, 4vw, 4rem) 4rem;
     }
 
-    .issue-cover .subtitle {
-      font-family: var(--serif);
+    /* ══ Header / metadata ═══════════════════════════════════════════ */
+    .memo-header-row {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 1rem;
+      padding-bottom: 1.25rem;
+    }
+
+    .memo-field {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .memo-field-label {
+      font-family: var(--mono);
+      font-size: 9px;
       font-weight: 400;
-      font-style: italic;
-      font-size: 1.4rem;
-      line-height: 1.3;
-      color: var(--muted);
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(26, 26, 26, 0.55);
+    }
+
+    .memo-field-value {
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--void);
+    }
+
+    .memo-field-value.accent {
+      color: var(--verticalAccent);
+    }
+
+    .memo-field-value.draft {
+      color: var(--alert-red);
+    }
+
+    .memo-field-value.ready {
+      color: var(--rand-blue);
+    }
+
+    .memo-rule {
+      height: 3px;
+      background: var(--void);
+      position: relative;
+      margin-bottom: 3rem;
+    }
+
+    .memo-rule::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 96px;
+      height: 100%;
+      background: var(--verticalAccent);
+    }
+
+    /* ══ Title block ══════════════════════════════════════════════════ */
+    .memo-titleblock {
+      margin-bottom: 4rem;
+      max-width: 820px;
+    }
+
+    .memo-eyebrow {
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--alert-red);
+      margin: 0 0 1.5rem;
+    }
+
+    .memo-title {
+      font-family: var(--sans);
+      font-weight: 900;
+      font-size: clamp(2.5rem, 5.5vw, 4.75rem);
+      line-height: 0.94;
+      letter-spacing: -0.03em;
+      margin: 0 0 1rem;
+      color: var(--void);
+    }
+
+    .memo-subtitle {
+      font-family: var(--sans);
+      font-weight: 500;
+      font-size: clamp(1.1rem, 1.6vw, 1.35rem);
+      line-height: 1.35;
+      color: rgba(26, 26, 26, 0.7);
       margin: 0 0 2rem;
     }
 
-    .issue-cover .tagline {
-      font-family: var(--serif);
-      font-size: 1.35rem;
-      font-weight: 400;
-      line-height: 1.4;
-      margin: 0 0 3rem;
-      padding-left: 1.5rem;
-      border-left: 3px solid var(--accent);
-    }
-
-    .cover-content :global(p) {
-      font-family: var(--serif);
+    .memo-tagline {
+      font-family: var(--sans);
       font-size: 1.15rem;
-      line-height: 1.6;
-      margin: 0 0 1.5rem;
+      font-style: italic;
+      font-weight: 400;
+      line-height: 1.55;
+      color: var(--void);
+      margin: 0;
+      padding: 0.25rem 0 0.25rem 1.5rem;
+      border-left: 3px solid var(--verticalAccent);
+      max-width: 680px;
     }
 
-    .cover-content :global(ul),
-    .cover-content :global(ol) {
-      font-family: var(--serif);
+    /* ══ Section label (shared) ══════════════════════════════════════ */
+    .memo-section-label {
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--void);
+      padding-bottom: 0.65rem;
+      border-bottom: 1px solid var(--void);
+      margin-bottom: 1.75rem;
+      display: flex;
+      align-items: baseline;
+      gap: 0.5rem;
+    }
+
+    .memo-section-label .spot-number {
+      font-size: 10px;
+    }
+
+    /* ══ Abstract ═════════════════════════════════════════════════════ */
+    .memo-abstract {
+      margin-bottom: 3.5rem;
+      max-width: 820px;
+    }
+
+    .memo-abstract p {
       font-size: 1.1rem;
       line-height: 1.6;
+      margin: 0;
+      font-weight: 400;
+      color: var(--void);
     }
 
-    .toc,
-    .cross-refs {
-      margin-top: 4rem;
-      padding-top: 2rem;
-      border-top: 1px solid var(--rule);
+    /* ══ Editor note body ════════════════════════════════════════════ */
+    .memo-editor-note {
+      margin-bottom: 3.5rem;
+      max-width: 780px;
     }
 
-    .toc h2,
-    .cross-refs h2 {
-      font-family: var(--sans);
-      font-size: 0.8rem;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin: 0 0 1.5rem;
-      font-weight: 500;
+    .memo-prose :global(p) {
+      font-size: 16px;
+      line-height: 1.65;
+      margin: 0 0 1.2rem;
+      color: var(--void);
     }
 
-    .toc ol {
+    .memo-prose :global(ul),
+    .memo-prose :global(ol) {
+      font-size: 15px;
+      line-height: 1.55;
+      padding-left: 1.5rem;
+      margin: 0 0 1.2rem;
+    }
+
+    .memo-prose :global(li) {
+      margin-bottom: 0.4rem;
+    }
+
+    .memo-prose :global(strong) {
+      font-weight: 700;
+    }
+
+    .memo-prose :global(code) {
+      font-family: var(--mono);
+      font-size: 0.9em;
+      background: var(--surface);
+      padding: 0.1em 0.4em;
+      border-radius: 2px;
+    }
+
+    /* ══ Table of Contents ═══════════════════════════════════════════ */
+    .memo-toc {
+      margin-bottom: 3.5rem;
+    }
+
+    .toc-list {
       list-style: none;
       padding: 0;
       margin: 0;
+      border-top: 1px solid var(--rule-subtle);
     }
 
-    .toc li {
-      padding: 1.25rem 0;
-      border-bottom: 1px solid rgba(26, 26, 26, 0.12);
+    .toc-row {
+      border-bottom: 1px solid var(--rule-subtle);
     }
 
-    .toc li:last-child {
-      border-bottom: none;
-    }
-
-    .toc a {
-      display: flex;
-      gap: 1rem;
+    .toc-link {
+      display: grid;
+      grid-template-columns: 44px 100px 1fr auto 24px;
       align-items: baseline;
+      gap: 1rem;
+      padding: 1.25rem 0.5rem;
+      text-decoration: none;
+      color: var(--void);
+      transition: background 180ms var(--ease), padding 180ms var(--ease);
+    }
+
+    .toc-row:hover .toc-link {
+      background: rgba(0, 85, 170, 0.04);
+      padding-left: 1rem;
+    }
+
+    .toc-pg {
+      font-size: 11px;
+      font-weight: 400;
+      letter-spacing: 0.1em;
+      color: rgba(26, 26, 26, 0.45);
+    }
+
+    .toc-marker {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--verticalAccent);
+    }
+
+    .toc-title-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+      min-width: 0;
+    }
+
+    .toc-title {
+      font-family: var(--sans);
+      font-size: 1.15rem;
+      font-weight: 700;
+      line-height: 1.2;
+      color: var(--void);
+      letter-spacing: -0.005em;
+    }
+
+    .toc-summary {
+      font-size: 13px;
+      font-weight: 400;
+      line-height: 1.5;
+      color: rgba(26, 26, 26, 0.6);
+    }
+
+    .toc-dots {
+      align-self: center;
+      height: 1px;
+      background-image: linear-gradient(to right, var(--rule-subtle) 50%, transparent 50%);
+      background-size: 6px 1px;
+      background-repeat: repeat-x;
+      min-width: 40px;
+    }
+
+    .toc-arrow {
+      font-family: var(--mono);
+      font-size: 1.1rem;
+      color: rgba(26, 26, 26, 0.4);
+      align-self: center;
+      transition: transform 180ms var(--ease), color 180ms var(--ease);
+    }
+
+    .toc-row:hover .toc-arrow {
+      color: var(--rand-blue);
+      transform: translateX(4px);
+    }
+
+    /* ══ Cross-references ════════════════════════════════════════════ */
+    .memo-xrefs {
+      margin-bottom: 3rem;
+    }
+
+    .xref-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    .xref-link {
+      display: grid;
+      grid-template-columns: 180px 1fr;
+      gap: 1.5rem;
+      align-items: baseline;
+      padding: 0.9rem 1rem;
+      background: var(--surface);
+      border-left: 3px solid var(--rand-blue);
+      text-decoration: none;
+      color: var(--void);
+      transition: background 180ms var(--ease), transform 180ms var(--ease);
+    }
+
+    .xref-link:hover {
+      background: rgba(0, 85, 170, 0.08);
+      transform: translateX(2px);
+    }
+
+    .xref-vertical {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--rand-blue);
+    }
+
+    .xref-reason {
+      font-size: 14px;
+      line-height: 1.5;
+      color: var(--void);
+    }
+
+    /* ══ Return link ═════════════════════════════════════════════════ */
+    .memo-return {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px dashed var(--rule-subtle);
+    }
+
+    .memo-return-link {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--void);
       text-decoration: none;
     }
 
-    .toc .marker {
-      font-family: var(--sans);
-      font-size: 0.85rem;
-      color: var(--accent);
-      min-width: 90px;
-      font-weight: 500;
-      letter-spacing: 0.02em;
+    .memo-return-link:hover {
+      color: var(--rand-blue);
     }
 
-    .toc .title {
-      font-family: var(--serif);
-      font-size: 1.3rem;
-      font-weight: 400;
-      line-height: 1.3;
-      flex: 1;
-    }
-
-    .toc a:hover .title {
-      color: var(--accent);
-    }
-
-    .section-summary {
-      font-family: var(--serif);
-      font-size: 1rem;
-      font-style: italic;
-      color: var(--muted);
-      margin: 0.5rem 0 0 calc(90px + 1rem);
-      line-height: 1.5;
-    }
-
-    .cross-refs ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
-
-    .cross-refs li {
-      padding: 0.75rem 0;
-      font-family: var(--serif);
-      font-size: 1rem;
-      line-height: 1.5;
-    }
-
-    @media (max-width: 640px) {
-      .issue-cover {
-        padding: 2rem 1.5rem 4rem;
+    /* ══ Responsive ═══════════════════════════════════════════════════ */
+    @media (max-width: 900px) {
+      .memo {
+        padding: 1.5rem 1rem 3rem;
       }
 
-      .section-summary {
-        margin-left: 0;
+      .memo-sheet {
+        grid-template-columns: 36px 1fr;
+      }
+
+      .memo-binding::before { top: 1rem; }
+      .memo-binding::after { top: 3rem; }
+
+      .memo-binding-label {
+        font-size: 10px;
+        letter-spacing: 0.25em;
+      }
+
+      .memo-header-row {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.85rem 1.25rem;
+      }
+
+      .toc-link {
+        grid-template-columns: 36px 1fr 24px;
+        gap: 0.75rem;
+      }
+
+      .toc-marker {
+        grid-column: 2;
+        grid-row: 1;
+        margin-bottom: -0.2rem;
+      }
+
+      .toc-title-wrap {
+        grid-column: 2;
+        grid-row: 2;
+      }
+
+      .toc-dots {
+        display: none;
+      }
+
+      .toc-pg {
+        grid-row: 1 / span 2;
+        align-self: center;
+      }
+
+      .toc-arrow {
+        grid-column: 3;
+        grid-row: 1 / span 2;
+      }
+
+      .xref-link {
+        grid-template-columns: 1fr;
+        gap: 0.3rem;
       }
     }
   </style>
