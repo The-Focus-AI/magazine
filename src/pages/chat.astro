@@ -1,0 +1,40 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout title="Chat · The Focus.AI Magazines">
+  <section class="placeholder">
+    <h1>Chat with the Magazines</h1>
+    <p>A conversational interface over every issue, concept, and source. Forthcoming — will run on an MCP server reading from <code>src/content/</code>.</p>
+    <p>In the meantime, the MCP server's source will live in <code>mcp-server/</code> on GitHub. Connect your Claude / Cursor / Goose client directly to it.</p>
+  </section>
+
+  <style>
+    .placeholder {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 5rem 3rem;
+    }
+
+    h1 {
+      font-family: var(--serif);
+      font-weight: 300;
+      font-size: 3rem;
+      margin: 0 0 1rem;
+    }
+
+    p {
+      font-family: var(--serif);
+      font-size: 1.2rem;
+      color: var(--muted);
+      line-height: 1.5;
+      margin: 0 0 1rem;
+    }
+
+    code {
+      font-family: var(--mono);
+      background: var(--paper-dim);
+      padding: 0.15em 0.4em;
+      font-size: 0.9em;
+    }
+  </style>
+</BaseLayout>

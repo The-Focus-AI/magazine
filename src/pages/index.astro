@@ -1,0 +1,219 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const issues = (await getCollection('issues')).sort((a, b) => {
+  // STATE first, then by publish date desc
+  if (a.data.vertical === 'state') return -1;
+  if (b.data.vertical === 'state') return 1;
+  return b.data.published.getTime() - a.data.published.getTime();
+});
+
+const verticalLabel = {
+  state: 'STATE',
+  surface: 'SURFACE',
+  runtime: 'RUNTIME',
+  harness: 'HARNESS',
+  local: 'LOCAL',
+  wire: 'WIRE',
+};
+
+const verticalDescription = {
+  state: 'Reports on the state of AI engineering.',
+  surface: 'On presentation layers, UI protocols, and rendering.',
+  runtime: 'On machines that think — and the substrates that hold them.',
+  harness: 'On the builder\'s practice of working with agent-native SDKs.',
+  local: 'On inference sovereignty — hosted, self-hosted, on-device.',
+  wire: 'On how agents access capability.',
+};
+---
+<BaseLayout title="The Focus.AI · Magazines">
+  <section class="hero">
+    <h1>The Focus.AI Magazines</h1>
+    <p class="dek">
+      A publication line on the state and shape of AI engineering. Six verticals. Reports and reference.
+    </p>
+  </section>
+
+  <section class="verticals">
+    <h2>Current Issues</h2>
+    <div class="grid">
+      {issues.map((issue) => (
+        <a class={`card voice-${issue.data.voice}`} href={`/${issue.data.vertical}-${String(issue.data.issue_number).padStart(2, '0')}/`} style={`--card-accent: ${issue.data.cover_color ?? '#c4563c'};`}>
+          <div class="card-head">
+            <span class="vertical">{verticalLabel[issue.data.vertical]}</span>
+            <span class="issue-number">№ {String(issue.data.issue_number).padStart(2, '0')}</span>
+          </div>
+          <div class="card-body">
+            <h3>{issue.data.issue_title}</h3>
+            <p class="subtitle">{issue.data.subtitle}</p>
+            <p class="tagline">{issue.data.tagline}</p>
+          </div>
+          <div class="card-foot">
+            <span class="meta">{verticalDescription[issue.data.vertical]}</span>
+            {issue.data.draft && <span class="draft">In progress</span>}
+          </div>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <style>
+    .hero {
+      padding: 5rem 3rem 3rem;
+      max-width: 900px;
+    }
+
+    .hero h1 {
+      font-family: var(--serif);
+      font-weight: 300;
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      line-height: 1;
+      margin: 0 0 1.5rem;
+      letter-spacing: -0.02em;
+    }
+
+    .hero .dek {
+      font-family: var(--serif);
+      font-size: 1.5rem;
+      font-weight: 300;
+      line-height: 1.4;
+      color: var(--muted);
+      margin: 0;
+      max-width: 640px;
+    }
+
+    .verticals {
+      padding: 3rem 3rem 5rem;
+    }
+
+    .verticals h2 {
+      font-family: var(--sans);
+      font-weight: 500;
+      font-size: 0.85rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin: 0 0 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .card {
+      display: flex;
+      flex-direction: column;
+      padding: 2rem;
+      background: var(--paper-dim);
+      border: 1px solid var(--rule);
+      border-radius: 0;
+      text-decoration: none;
+      color: var(--ink);
+      transition: transform 150ms ease, background 150ms ease;
+      min-height: 320px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 8px;
+      height: 100%;
+      background: var(--card-accent);
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+      background: #fff;
+    }
+
+    .card-head {
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--sans);
+      font-size: 0.78rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 2rem;
+    }
+
+    .card-head .vertical {
+      font-weight: 600;
+      color: var(--card-accent);
+    }
+
+    .card-body {
+      flex: 1;
+    }
+
+    .card h3 {
+      font-family: var(--serif);
+      font-weight: 400;
+      font-size: 1.75rem;
+      line-height: 1.1;
+      margin: 0 0 0.5rem;
+      letter-spacing: -0.01em;
+    }
+
+    .card .subtitle {
+      font-family: var(--serif);
+      font-size: 1rem;
+      font-style: italic;
+      color: var(--muted);
+      margin: 0 0 1.5rem;
+    }
+
+    .card .tagline {
+      font-family: var(--serif);
+      font-size: 1.05rem;
+      line-height: 1.45;
+      margin: 0;
+    }
+
+    .card-foot {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-top: 1.5rem;
+      padding-top: 1rem;
+      border-top: 1px solid rgba(26, 26, 26, 0.15);
+    }
+
+    .card-foot .meta {
+      font-family: var(--sans);
+      font-size: 0.78rem;
+      color: var(--muted);
+      max-width: 70%;
+    }
+
+    .draft {
+      font-family: var(--sans);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      padding: 0.25rem 0.5rem;
+      background: var(--ink);
+      color: var(--paper);
+      font-weight: 500;
+    }
+
+    @media (max-width: 640px) {
+      .hero {
+        padding: 3rem 1.5rem 2rem;
+      }
+
+      .verticals {
+        padding: 2rem 1.5rem 3rem;
+      }
+    }
+  </style>
+</BaseLayout>
