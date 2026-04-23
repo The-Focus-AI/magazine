@@ -54,17 +54,14 @@ const verticalUp = verticalLabel[vertical].toUpperCase();
       rel="stylesheet"
     />
 
-    <!-- Paged.js runs after DOM + fonts to paginate the content -->
-    <script>
-      window.PagedConfig = {
-        auto: false,
-      };
-    </script>
-    <script src="https://unpkg.com/pagedjs@0.4.3/dist/paged.polyfill.js" is:inline></script>
+    <!-- Paged.js: config BEFORE polyfill loads, then manual trigger.
+         Using is:inline on all three so Astro doesn't module-ify them,
+         otherwise they load async and PagedConfig isn't set in time. -->
     <script is:inline>
-      // Wait for web fonts AND all images to finish loading before paginating.
-      // Paged.js measures element heights during fragmentation — if fonts
-      // or images load late, pagination breaks visibly (text overlaps, etc).
+      window.PagedConfig = { auto: false };
+    </script>
+    <script is:inline src="https://unpkg.com/pagedjs@0.4.3/dist/paged.polyfill.js"></script>
+    <script is:inline>
       function waitForImages() {
         const imgs = Array.from(document.images);
         return Promise.all(
@@ -78,10 +75,12 @@ const verticalUp = verticalLabel[vertical].toUpperCase();
           )
         );
       }
-      Promise.all([document.fonts.ready, waitForImages()]).then(() => {
-        if (window.PagedPolyfill) {
-          window.PagedPolyfill.preview();
-        }
+      window.addEventListener('DOMContentLoaded', () => {
+        Promise.all([document.fonts.ready, waitForImages()]).then(() => {
+          if (window.PagedPolyfill && typeof window.PagedPolyfill.preview === 'function') {
+            window.PagedPolyfill.preview();
+          }
+        });
       });
     </script>
   </head>
