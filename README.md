@@ -41,4 +41,14 @@ Push to `main`. GitHub Actions builds and deploys to GitHub Pages. The `public/C
 
 ## DNS
 
-`magazine.thefocus.ai` CNAME → `the-focus-ai.github.io`.
+Add this record at wherever `thefocus.ai` is managed:
+
+```
+Type    Name         Target
+CNAME   magazine     the-focus-ai.github.io
+```
+
+Then on GitHub: Settings → Pages → Custom domain → verify. HTTPS enforcement should turn on automatically once the cert provisions.
+
+Until DNS is added, the site is reachable at:
+https://the-focus-ai.github.io/magazine/
