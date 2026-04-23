@@ -74,6 +74,13 @@ const imp = imprint[vertical];
           </div>
           <h1 class="cover-title">{issue.data.issue_title}</h1>
           <p class="cover-dek">{issue.data.subtitle}</p>
+          {sections.length > 0 && (
+            <p class="cover-cta">
+              <a href={`/${issue.slug}/read/`} class="cover-cta-link">
+                Read the full issue →
+              </a>
+            </p>
+          )}
         </div>
 
         <footer class="cover-footer">
@@ -91,10 +98,9 @@ const imp = imprint[vertical];
           <ol class="toc">
             {sections.map((section, i) => {
               const pageNum = 1 + i * 5;
-              const sectionUrlSlug = section.slug.replace(`${issue.slug}-`, '');
               return (
                 <li aria-disabled={section.data.draft ? 'true' : 'false'}>
-                  <a href={`/${issue.slug}/${sectionUrlSlug}/`}>
+                  <a href={`/${issue.slug}/read/#s-${section.data.section_number}`}>
                     <span class="num">
                       {section.data.section_marker ?? `§${issueNumRoman(section.data.section_number)}`}
                     </span>
@@ -286,6 +292,27 @@ const imp = imprint[vertical];
       font-size: 14px;
       color: var(--mag-spot);
       text-align: center;
+    }
+
+    .cover-cta {
+      margin: 28px 0 0;
+    }
+    .cover-cta-link {
+      display: inline-block;
+      font-family: var(--mag-mono);
+      font-size: 11px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--mag-ink);
+      background: transparent;
+      border: 1px solid var(--mag-ink);
+      padding: 12px 20px;
+      text-decoration: none;
+      transition: background 180ms ease, color 180ms ease;
+    }
+    .cover-cta-link:hover {
+      background: var(--mag-ink);
+      color: var(--mag-paper);
     }
 
     @media (max-width: 640px) {
