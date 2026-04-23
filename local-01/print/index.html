@@ -1,0 +1,34 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>LOCAL № 01 · Inference or Die</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..900,0..100;1,9..144,300..900,0..100&family=Newsreader:ital,opsz,wght@0,6..72,300..800;1,6..72,300..800&family=IBM+Plex+Mono:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"><!-- Paged.js runs after DOM + fonts to paginate the content --><script type="module">window.PagedConfig={auto:!1};</script><script src="https://unpkg.com/pagedjs@0.4.3/dist/paged.polyfill.js"></script><script>
+      // Wait for web fonts AND all images to finish loading before paginating.
+      // Paged.js measures element heights during fragmentation — if fonts
+      // or images load late, pagination breaks visibly (text overlaps, etc).
+      function waitForImages() {
+        const imgs = Array.from(document.images);
+        return Promise.all(
+          imgs.map((img) =>
+            img.complete
+              ? Promise.resolve()
+              : new Promise((res) => {
+                  img.addEventListener('load', res);
+                  img.addEventListener('error', res);
+                })
+          )
+        );
+      }
+      Promise.all([document.fonts.ready, waitForImages()]).then(() => {
+        if (window.PagedPolyfill) {
+          window.PagedPolyfill.preview();
+        }
+      });
+    </script><link rel="stylesheet" href="/_astro/print.IPfNd8w_.css"></head> <body data-mag="local" class="print-body"> <div class="mag-root"> <!-- ═════ Cover page ═════ --> <section class="print-cover"> <header class="print-cover-top"> <div class="print-cover-publisher">
+Focus.AI Press<br>
+Cornwall, Connecticut
+</div> <div class="print-cover-number">
+Issue No. 01<br> APRIL 2026 </div> </header> <h1 class="print-cover-masthead"> Local<span class="period">.</span> </h1> <div class="print-cover-emblem"> <svg class="emblem" viewBox="0 0 340 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><g><rect x="10" y="10" width="320" height="180" fill="var(--mag-ink)"></rect><text x="170" y="104" font-family="Fraunces, serif" font-weight="900" font-size="60" text-anchor="middle" fill="var(--mag-accent)" letter-spacing="-2">INFERENCE</text><text x="170" y="150" font-family="Fraunces, serif" font-weight="400" font-style="italic" font-size="36" text-anchor="middle" fill="var(--mag-paper)">or die.</text><g stroke="var(--mag-paper)" stroke-width="1.5" fill="none"><path d="M 20 20 L 20 34 M 20 20 L 34 20"></path><path d="M 320 20 L 320 34 M 320 20 L 306 20"></path><path d="M 20 180 L 20 166 M 20 180 L 34 180"></path><path d="M 320 180 L 320 166 M 320 180 L 306 180"></path></g><text x="170" y="178" font-family="IBM Plex Mono, monospace" font-size="8" text-anchor="middle" fill="var(--mag-paper)" letter-spacing="4">A TRACT ON RUNNING IT YOURSELF</text></g></svg> </div> <div class="print-cover-lines"> <p class="print-cover-kicker">The Feature</p> <h2 class="print-cover-subtitle">Inference or Die</h2> <p class="print-cover-dek">A tract on running it yourself</p> <p class="print-cover-tagline">&ldquo;No centralization. No data exfiltration. Cheap. The Linux moment for AI looks like this.&rdquo;</p> </div> <footer class="print-cover-footer"> <span>LOCAL—01</span> <span>The Focus.AI Magazines</span> </footer> </section> <!-- ═════ Contents page ═════ --> <section class="print-toc"> <div class="print-toc-label">Contents · APRIL 2026</div> <h2>In this issue.</h2> <ol class="print-toc-list"> <li> <span class="num">Preface</span> <span class="title"> A Tract <em>Why this issue is angrier than the others. The argument for running infe…</em> </span> <span class="page" data-href="#s-0"> <a href="#s-0">·</a> </span> </li> </ol> <div class="print-abstract"> <div class="print-abstract-label">Abstract</div> <p>Three tiers of inference: hosted APIs, self-hosted clusters, and the GPU in your laptop. This issue argues that the third tier has been underrated — and that a consumer-grade MacMini plus an open-weights model is already enough to unmake a chunk of the SaaS stack.</p> </div> </section> <!-- ═════ Sections ═════ --> <section class="print-chapter is-foreword" id="s-0"> <header class="print-chapter-head"> <span class="print-chapter-marker">Preface</span> <h2 class="print-chapter-title">A Tract</h2> <p class="print-chapter-dek">Why this issue is angrier than the others. The argument for running inference you own.</p> </header>  <div class="print-chapter-body"> <figure class="figure-span">
+  <img src="/images/local/local-01-opener.png" alt="A laptop held aloft like a raised fist with red and violet lightning bolts radiating, severed cables on the ground.">
+  <figcaption>Preface · Inference you own, held up in the room.</figcaption>
+</figure>
+<p>LOCAL is a tract, not a survey. The tone is deliberate.</p>
+<p>Most of the magazines in this family take the patient view: here are the forces, here are the proposals, here is where the stack is heading. LOCAL is the one that picks a side. Running inference you own is not a curiosity or a hobbyist’s position — it is the architecture that makes every other good thing about this wave cheaper, safer, and more durable.</p>
+<p>The unusual typography is the point. When the rest of the publication is in cream paper and serif body copy, LOCAL is the one with the black cover and the stenciled title, and you should take that as a statement.</p>
+<p>Forthcoming.</p> </div> <div class="print-chapter-end">§</div> </section> <!-- ═════ Colophon ═════ --> <section class="print-colophon"> <h3>Colophon.</h3> <div class="print-bar"><div></div><div></div><div></div></div> <dl> <dt>Issue</dt> <dd>LOCAL No. 01 · APRIL 2026<br>Inference or Die</dd> <dt>Published by</dt> <dd>Focus.AI Press, Cornwall, Connecticut</dd> <dt>Set in</dt> <dd>Fraunces, Newsreader, and IBM Plex Mono.</dd> <dt>Voice</dt> <dd>Architecture · third-person, cited</dd> </dl> <p class="print-fin">— fin —</p> </section> </div>  </body> </html>
