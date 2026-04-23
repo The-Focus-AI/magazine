@@ -1,7 +1,8 @@
-<!DOCTYPE html><html lang="en"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>HARNESS № 01 · The Builder&#39;s Field Manual</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..900,0..100;1,9..144,300..900,0..100&family=Newsreader:ital,opsz,wght@0,6..72,300..800;1,6..72,300..800&family=IBM+Plex+Mono:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"><!-- Paged.js runs after DOM + fonts to paginate the content --><script type="module">window.PagedConfig={auto:!1};</script><script src="https://unpkg.com/pagedjs@0.4.3/dist/paged.polyfill.js"></script><script>
-      // Wait for web fonts AND all images to finish loading before paginating.
-      // Paged.js measures element heights during fragmentation — if fonts
-      // or images load late, pagination breaks visibly (text overlaps, etc).
+<!DOCTYPE html><html lang="en"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>HARNESS № 01 · The Builder&#39;s Field Manual</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..900,0..100;1,9..144,300..900,0..100&family=Newsreader:ital,opsz,wght@0,6..72,300..800;1,6..72,300..800&family=IBM+Plex+Mono:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"><!-- Paged.js: config BEFORE polyfill loads, then manual trigger.
+         Using is:inline on all three so Astro doesn't module-ify them,
+         otherwise they load async and PagedConfig isn't set in time. --><script>
+      window.PagedConfig = { auto: false };
+    </script><script src="https://unpkg.com/pagedjs@0.4.3/dist/paged.polyfill.js"></script><script>
       function waitForImages() {
         const imgs = Array.from(document.images);
         return Promise.all(
@@ -15,10 +16,12 @@
           )
         );
       }
-      Promise.all([document.fonts.ready, waitForImages()]).then(() => {
-        if (window.PagedPolyfill) {
-          window.PagedPolyfill.preview();
-        }
+      window.addEventListener('DOMContentLoaded', () => {
+        Promise.all([document.fonts.ready, waitForImages()]).then(() => {
+          if (window.PagedPolyfill && typeof window.PagedPolyfill.preview === 'function') {
+            window.PagedPolyfill.preview();
+          }
+        });
       });
     </script><link rel="stylesheet" href="/_astro/print.IPfNd8w_.css"></head> <body data-mag="harness" class="print-body"> <div class="mag-root"> <!-- ═════ Cover page ═════ --> <section class="print-cover"> <header class="print-cover-top"> <div class="print-cover-publisher">
 Focus.AI Press<br>
