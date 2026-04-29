@@ -3,16 +3,22 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import EmailSignup from '../components/EmailSignup.astro';
 
-const issues = (await getCollection('issues'))
+const all = await getCollection('issues');
+const issues = all
   .filter((i) => !i.data.draft)
   .sort((a, b) => {
-    // STATE first (the main report), then architecture issues by published date desc
     if (a.data.vertical === 'state') return -1;
     if (b.data.vertical === 'state') return 1;
     return b.data.published.getTime() - a.data.published.getTime();
   });
 
-const verticalLabel = {
+const forthcoming = all
+  .filter((i) => i.data.draft)
+  .sort((a, b) => a.data.vertical.localeCompare(b.data.vertical));
+
+const featured = issues[0];
+
+const verticalLabel: Record<string, string> = {
   state: 'STATE',
   surface: 'SURFACE',
   runtime: 'RUNTIME',
@@ -21,7 +27,7 @@ const verticalLabel = {
   wire: 'WIRE',
 };
 
-const verticalDescription = {
+const verticalDescription: Record<string, string> = {
   state: 'Reports on the state of AI engineering.',
   surface: 'On presentation layers, UI protocols, and rendering.',
   runtime: 'On machines that think, and the substrates that hold them.',
@@ -30,507 +36,415 @@ const verticalDescription = {
   wire: 'On how agents access capability.',
 };
 
-const verticalSymbol = {
-  state: '◉',      // filled circle — the synthesis
-  surface: '▤',    // UI frame
-  runtime: '▣',    // hardened square
-  harness: '▦',    // structured
-  local: '▨',      // distributed
-  wire: '▥',       // wired
-};
-
-const thisYear = new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' }).toUpperCase();
-
-const publishedCount = issues.length;
+const featuredEyebrow = featured
+  ? `Issue ${String(featured.data.issue_number).padStart(2, '0')} · ${featured.data.published
+      .toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
+      .toUpperCase()}`
+  : '';
 ---
-<BaseLayout title="THEFOCUS.AI · Magazines">
-  <section class="cover">
-    <div class="cover-inner">
-      <div class="cover-masthead">
-        <div class="masthead-col">
-          <div class="masthead-label">Document No.</div>
-          <div class="masthead-value mono">RM–2026–01</div>
-        </div>
-        <div class="masthead-col">
-          <div class="masthead-label">Series</div>
-          <div class="masthead-value mono">RESEARCH MEMORANDUM</div>
-        </div>
-        <div class="masthead-col">
-          <div class="masthead-label">Issued</div>
-          <div class="masthead-value mono">{thisYear}</div>
-        </div>
-        <div class="masthead-col">
-          <div class="masthead-label">Volume</div>
-          <div class="masthead-value mono">I</div>
-        </div>
-      </div>
+<BaseLayout title="TheFocus.AI · Magazine">
 
-      <div class="cover-rule"></div>
-
-      <h1 class="cover-title">
-        <span class="cover-title-eyebrow mono">THE FOCUS.AI ·&nbsp;MAGAZINES</span>
-        <span class="cover-title-main">
-          Research<br />
-          Memoranda on<br />
-          <span class="cover-title-accent">Agent Engineering</span>
-        </span>
+  <!-- ══ HERO ════════════════════════════════════════════════ -->
+  <section class="hero">
+    <div class="hero-inner">
+      {featured && (
+        <div class="hero-eyebrow mono">{featuredEyebrow}</div>
+      )}
+      <h1 class="hero-title">
+        Field reports from the front of<br />
+        <span class="hero-title-accent">AI engineering.</span>
       </h1>
+      <p class="hero-lede">
+        A magazine on what's actually happening in AI engineering — what's
+        shipping, what's breaking, what's about to change. New issues land
+        irregularly, written for people who build for a living.
+      </p>
+      {featured && (
+        <div class="hero-ctas">
+          <a class="btn-primary" href={`/${featured.slug}/`}>
+            Read Issue 01 →
+          </a>
+          <a class="btn-secondary" href="#coming">What's coming</a>
+        </div>
+      )}
+    </div>
+  </section>
 
-      <p class="cover-lede">
-        A publication line distilling signal from the noise of an industry
-        rearranging itself in real time. The first issue is a dispatch from
-        AI Engineer Miami — two days, four chapters, the patterns moving
-        underneath.
+  <!-- ══ FEATURED ISSUE ══════════════════════════════════════ -->
+  {featured && (
+    <section class="featured">
+      <div class="featured-inner">
+        <div class="featured-label uppercase-label">
+          <span class="spot-number">§</span>&nbsp;In this issue
+        </div>
+
+        <a href={`/${featured.slug}/`} class="featured-card">
+          <div class="featured-meta">
+            <div class="featured-vertical mono">
+              {verticalLabel[featured.data.vertical]} · №&nbsp;{String(featured.data.issue_number).padStart(2, '0')}
+            </div>
+            <div class="featured-date mono">
+              {featured.data.published.toLocaleDateString('en-US', { month: 'short', year: 'numeric' }).toUpperCase()}
+            </div>
+          </div>
+
+          <h2 class="featured-title">{featured.data.issue_title}</h2>
+          <p class="featured-subtitle">{featured.data.subtitle}</p>
+          <p class="featured-tagline">"{featured.data.tagline}"</p>
+
+          {featured.data.summary && (
+            <p class="featured-summary">{featured.data.summary}</p>
+          )}
+
+          <div class="featured-cta mono">
+            Read the issue →
+          </div>
+        </a>
+      </div>
+    </section>
+  )}
+
+  <!-- ══ WHAT'S COMING ═══════════════════════════════════════ -->
+  {forthcoming.length > 0 && (
+    <section class="coming" id="coming">
+      <div class="coming-inner">
+        <div class="coming-header">
+          <div class="coming-label uppercase-label">What's coming</div>
+          <div class="coming-count mono">
+            {String(forthcoming.length).padStart(2, '0')} FORTHCOMING
+          </div>
+        </div>
+
+        <p class="coming-blurb">
+          The magazine covers six beats. Each gets its own issue when
+          there's something worth saying. Below — what's queued.
+        </p>
+
+        <ol class="coming-list">
+          {forthcoming.map((issue) => (
+            <li class="coming-row">
+              <div class="coming-vertical mono">{verticalLabel[issue.data.vertical]}</div>
+              <div class="coming-body">
+                <div class="coming-title">{issue.data.issue_title}</div>
+                <div class="coming-desc mono">{verticalDescription[issue.data.vertical]}</div>
+              </div>
+              <div class="coming-badge mono">FORTHCOMING</div>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+  )}
+
+  <!-- ══ SISTER PROPERTIES ═══════════════════════════════════ -->
+  <section class="sisters">
+    <div class="sisters-inner">
+      <p class="sisters-text mono">
+        For long-form research, see
+        <a href="https://thefocus.ai/reports">thefocus.ai/reports</a>.
+        Courses are forthcoming at
+        <span class="sisters-future">courses.thefocus.ai</span>.
       </p>
     </div>
   </section>
 
-  <section class="catalog">
-    <div class="catalog-header">
-      <div class="catalog-label uppercase-label">
-        <span class="spot-number">§</span>&nbsp;Current Issues
-      </div>
-      <div class="catalog-count mono">
-        {issues.length.toString().padStart(2, '0')} {issues.length === 1 ? 'ISSUE' : 'ISSUES'}
-      </div>
-    </div>
-
-    <ol class="issue-list">
-      {issues.map((issue, idx) => {
-        const num = String(idx + 1).padStart(2, '0');
-        const issueNum = String(issue.data.issue_number).padStart(2, '0');
-        return (
-          <li class={`issue-row voice-${issue.data.voice}`}>
-            <a href={`/${issue.slug}/`} class="issue-link">
-              <div class="issue-index">
-                <span class="spot-number">{num}</span>
-              </div>
-
-              <div class="issue-symbol" aria-hidden="true" style={`--v-accent: var(--${issue.data.vertical}-accent);`}>
-                {verticalSymbol[issue.data.vertical]}
-              </div>
-
-              <div class="issue-meta">
-                <div class="issue-vertical mono">{verticalLabel[issue.data.vertical]} · №&nbsp;{issueNum}</div>
-                <div class="issue-published mono">
-                  {issue.data.draft
-                    ? 'IN PROGRESS'
-                    : issue.data.published.toLocaleDateString('en-US', { month: 'short', year: 'numeric' }).toUpperCase()}
-                </div>
-              </div>
-
-              <div class="issue-body">
-                <h3 class="issue-title">{issue.data.issue_title}</h3>
-                <p class="issue-subtitle">{issue.data.subtitle}</p>
-                <p class="issue-tagline">"{issue.data.tagline}"</p>
-                <p class="issue-vertical-desc mono">{verticalDescription[issue.data.vertical]}</p>
-              </div>
-
-              <div class="issue-arrow" aria-hidden="true">
-                <span>READ</span>
-                <svg width="20" height="12" viewBox="0 0 20 12" fill="none">
-                  <path d="M14 1L19 6L14 11M19 6H0" stroke="currentColor" stroke-width="1.5" />
-                </svg>
-              </div>
-            </a>
-          </li>
-        );
-      })}
-    </ol>
-  </section>
-
   <EmailSignup
-    heading="Subscribe to TheFocus.AI"
-    blurb="New issues, irregular cadence. No marketing — just signal."
+    heading="Get the next issue."
+    blurb="One email when each issue ships. No marketing — just the dispatch."
   />
 
   <style>
-    /* ══ Cover (hero) ═════════════════════════════════════════════════ */
-    .cover {
-      background: var(--paper);
+    /* ══ Hero ═════════════════════════════════════════════════ */
+    .hero {
+      padding: 5rem 0 4rem;
       border-bottom: 1px solid var(--void);
-      padding: 3rem 0 5rem;
-      position: relative;
     }
-
-    .cover-inner {
-      max-width: 1400px;
+    .hero-inner {
+      max-width: 1100px;
       margin: 0 auto;
       padding: 0 2rem;
     }
-
-    .cover-masthead {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 1rem;
-      padding-bottom: 1.25rem;
-      margin-bottom: 0;
-    }
-
-    .masthead-col {
-      border-left: 1px solid var(--void);
-      padding-left: 1rem;
-    }
-
-    .masthead-col:first-child {
-      border-left-width: 3px;
-      border-left-color: var(--rand-blue);
-    }
-
-    .masthead-label {
-      font-family: var(--mono);
-      font-size: 10px;
-      font-weight: 400;
-      letter-spacing: 0.15em;
+    .hero-eyebrow {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.28em;
       text-transform: uppercase;
-      color: rgba(26, 26, 26, 0.6);
-      margin-bottom: 0.35rem;
+      color: var(--alert-red);
+      margin-bottom: 1.5rem;
+      padding-left: 1rem;
+      border-left: 3px solid var(--alert-red);
     }
-
-    .masthead-value {
+    .hero-title {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-weight: 900;
+      font-size: clamp(2.5rem, 7vw, 6rem);
+      line-height: 0.95;
+      letter-spacing: -0.035em;
+      color: var(--void);
+      margin: 0 0 1.5rem;
+      max-width: 14ch;
+    }
+    .hero-title-accent {
+      color: var(--rand-blue);
+    }
+    .hero-lede {
+      font-size: clamp(1.05rem, 1.4vw, 1.25rem);
+      line-height: 1.55;
+      color: var(--void);
+      max-width: 640px;
+      margin: 0 0 2.25rem;
+      font-weight: 400;
+    }
+    .hero-ctas {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .btn-primary {
+      display: inline-block;
+      font-family: var(--mono, 'Courier Prime', monospace);
       font-size: 12px;
       font-weight: 700;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.18em;
       text-transform: uppercase;
-    }
-
-    .cover-rule {
-      height: 4px;
+      padding: 0.95rem 1.75rem;
       background: var(--void);
-      position: relative;
-      margin-bottom: 3rem;
+      color: var(--paper);
+      text-decoration: none;
+      border: 1px solid var(--void);
+      transition: background 150ms ease, border-color 150ms ease;
+    }
+    .btn-primary:hover {
+      background: var(--rand-blue);
+      border-color: var(--rand-blue);
+    }
+    .btn-secondary {
+      font-family: var(--mono, 'Courier Prime', monospace);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--void);
+      text-decoration: none;
+      padding: 0.95rem 0.5rem;
+      border-bottom: 1px solid var(--void);
+    }
+    .btn-secondary:hover {
+      color: var(--rand-blue);
+      border-bottom-color: var(--rand-blue);
     }
 
-    .cover-rule::after {
+    /* ══ Featured issue card ══════════════════════════════════ */
+    .featured {
+      padding: 4rem 0;
+    }
+    .featured-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+    .featured-label {
+      font-size: 13px;
+      margin-bottom: 1.5rem;
+    }
+    .featured-card {
+      display: block;
+      background: var(--paper);
+      border: 1px solid var(--void);
+      padding: 3rem 3rem 2.5rem;
+      text-decoration: none;
+      color: var(--void);
+      transition: transform 200ms var(--ease, ease), box-shadow 200ms var(--ease, ease);
+      position: relative;
+    }
+    .featured-card::before {
       content: '';
       position: absolute;
       top: 0;
       left: 0;
-      width: 120px;
-      height: 100%;
-      background: var(--rand-blue);
+      width: 96px;
+      height: 6px;
+      background: var(--alert-red);
     }
-
-    .cover-title {
-      margin: 0 0 3rem;
+    .featured-card:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: 4px 4px 0 0 var(--void);
+    }
+    .featured-meta {
       display: flex;
-      flex-direction: column;
-      gap: 1rem;
+      justify-content: space-between;
+      align-items: baseline;
+      padding-bottom: 1rem;
+      margin-bottom: 1.5rem;
+      border-bottom: 1px solid var(--rule-subtle, rgba(20, 19, 16, 0.14));
     }
-
-    .cover-title-eyebrow {
-      font-size: 11px;
+    .featured-vertical {
+      font-size: 13px;
       font-weight: 700;
-      letter-spacing: 0.25em;
+      letter-spacing: 0.16em;
       color: var(--alert-red);
     }
-
-    .cover-title-main {
-      font-family: var(--sans);
+    .featured-date {
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      color: rgba(26, 26, 26, 0.55);
+    }
+    .featured-title {
+      font-family: 'Inter', system-ui, sans-serif;
       font-weight: 900;
-      font-size: clamp(3rem, 8vw, 7rem);
-      line-height: 0.88;
-      letter-spacing: -0.035em;
+      font-size: clamp(2rem, 4vw, 3rem);
+      line-height: 1.04;
+      letter-spacing: -0.025em;
+      margin: 0 0 0.75rem;
       color: var(--void);
     }
-
-    .cover-title-accent {
+    .featured-subtitle {
+      font-size: 18px;
+      line-height: 1.45;
+      color: rgba(26, 26, 26, 0.75);
+      margin: 0 0 1.25rem;
+    }
+    .featured-tagline {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-style: italic;
+      font-size: 17px;
+      line-height: 1.4;
+      color: var(--void);
+      margin: 0 0 1.75rem;
+      padding-left: 1rem;
+      border-left: 3px solid var(--rand-blue);
+      max-width: 720px;
+    }
+    .featured-summary {
+      font-size: 15px;
+      line-height: 1.65;
+      color: rgba(26, 26, 26, 0.7);
+      max-width: 720px;
+      margin: 0 0 2rem;
+    }
+    .featured-cta {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
       color: var(--rand-blue);
     }
 
-    .cover-lede {
-      font-family: var(--sans);
-      font-size: clamp(1.15rem, 1.6vw, 1.4rem);
-      line-height: 1.45;
-      font-weight: 400;
-      color: var(--void);
-      max-width: 760px;
-      margin: 0 0 4rem;
-      border-left: 3px solid var(--alert-red);
-      padding: 0.25rem 0 0.25rem 1.5rem;
+    /* ══ What's coming ════════════════════════════════════════ */
+    .coming {
+      padding: 4rem 0;
+      border-top: 1px solid var(--void);
     }
-
-    .cover-meta {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 3rem;
-      padding-top: 3rem;
-      border-top: 1px dashed var(--rule-subtle);
+    .coming-inner {
       max-width: 1100px;
-    }
-
-    .cover-meta-col {
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-    }
-
-    .cover-meta-text {
-      font-size: 15px;
-      line-height: 1.6;
-      margin: 0;
-      color: var(--void);
-    }
-
-    .cover-meta-text strong {
-      font-family: var(--mono);
-      font-weight: 700;
-      font-size: 13px;
-      letter-spacing: 0.08em;
-    }
-
-    /* ══ Catalog (issue list) ═════════════════════════════════════════ */
-    .catalog {
-      max-width: 1400px;
       margin: 0 auto;
-      padding: 5rem 2rem 3rem;
+      padding: 0 2rem;
     }
-
-    .catalog-header {
+    .coming-header {
       display: flex;
       justify-content: space-between;
       align-items: baseline;
       padding-bottom: 1rem;
       border-bottom: 2px solid var(--void);
-      margin-bottom: 0;
+      margin-bottom: 1.5rem;
     }
-
-    .catalog-label {
-      font-size: 13px;
-    }
-
-    .catalog-count {
+    .coming-label { font-size: 13px; }
+    .coming-count {
       font-size: 11px;
       color: rgba(26, 26, 26, 0.55);
+      letter-spacing: 0.15em;
     }
-
-    .issue-list {
+    .coming-blurb {
+      font-size: 15px;
+      line-height: 1.55;
+      color: rgba(26, 26, 26, 0.7);
+      max-width: 640px;
+      margin: 0 0 2.5rem;
+    }
+    .coming-list {
       list-style: none;
       padding: 0;
       margin: 0;
     }
-
-    .issue-row {
-      border-bottom: 1px solid var(--rule-subtle);
-      position: relative;
-      transition: background 200ms var(--ease);
-    }
-
-    .issue-row:hover {
-      background: rgba(0, 85, 170, 0.03);
-    }
-
-    .issue-link {
+    .coming-row {
       display: grid;
-      grid-template-columns: 60px 60px 180px 1fr 120px;
+      grid-template-columns: 140px 1fr 140px;
       gap: 1.5rem;
-      align-items: start;
-      padding: 2.25rem 1rem;
-      text-decoration: none;
-      color: var(--void);
-      transition: padding 200ms var(--ease);
+      align-items: center;
+      padding: 1.25rem 0;
+      border-bottom: 1px solid var(--rule-subtle, rgba(20, 19, 16, 0.14));
     }
-
-    .issue-row:hover .issue-link {
-      padding-left: 1.75rem;
-    }
-
-    .issue-index {
-      font-size: 12px;
-      padding-top: 0.35rem;
-      opacity: 0.65;
-    }
-
-    .issue-symbol {
-      font-size: 2.5rem;
-      line-height: 1;
-      color: var(--v-accent);
-      padding-top: 0.1rem;
-      transition: transform 300ms var(--ease);
-    }
-
-    .issue-row:hover .issue-symbol {
-      transform: rotate(8deg) scale(1.08);
-    }
-
-    .issue-meta {
-      display: flex;
-      flex-direction: column;
-      gap: 0.35rem;
-      padding-top: 0.35rem;
-    }
-
-    .issue-vertical {
+    .coming-vertical {
       font-size: 13px;
       font-weight: 700;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
+      letter-spacing: 0.18em;
       color: var(--void);
     }
-
-    .issue-published {
-      font-size: 10px;
-      font-weight: 400;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: rgba(26, 26, 26, 0.55);
-    }
-
-    .voice-reportage .issue-published {
-      color: var(--alert-red);
+    .coming-title {
+      font-family: 'Inter', system-ui, sans-serif;
       font-weight: 700;
-    }
-
-    .issue-body {
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-      max-width: 620px;
-    }
-
-    .issue-title {
-      font-family: var(--sans);
-      font-weight: 900;
-      font-size: clamp(1.5rem, 2.1vw, 2rem);
-      line-height: 1.05;
-      letter-spacing: -0.015em;
-      margin: 0;
+      font-size: 17px;
+      letter-spacing: -0.01em;
       color: var(--void);
+      margin-bottom: 0.25rem;
     }
-
-    .issue-subtitle {
-      font-size: 15px;
-      font-weight: 400;
-      line-height: 1.4;
-      color: rgba(26, 26, 26, 0.7);
-      margin: 0;
-    }
-
-    .issue-tagline {
-      font-size: 14px;
-      font-style: italic;
-      line-height: 1.45;
-      color: var(--void);
-      margin: 0.35rem 0 0.5rem;
-      padding-left: 0.85rem;
-      border-left: 2px solid var(--rand-blue);
-    }
-
-    .voice-reportage .issue-tagline {
-      border-left-color: var(--alert-red);
-    }
-
-    .issue-vertical-desc {
+    .coming-desc {
       font-size: 11px;
-      font-weight: 400;
       letter-spacing: 0.06em;
       text-transform: uppercase;
       color: rgba(26, 26, 26, 0.55);
-      margin: 0;
+    }
+    .coming-badge {
+      justify-self: end;
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      color: rgba(26, 26, 26, 0.45);
+      border: 1px solid rgba(26, 26, 26, 0.2);
+      padding: 0.4rem 0.65rem;
     }
 
-    .issue-arrow {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      justify-content: flex-end;
-      align-self: center;
-      font-family: var(--mono);
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.18em;
+    /* ══ Sister properties ═══════════════════════════════════ */
+    .sisters {
+      padding: 2.5rem 0;
+      border-top: 1px solid var(--rule-subtle, rgba(20, 19, 16, 0.14));
+    }
+    .sisters-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+    .sisters-text {
+      font-size: 12px;
+      line-height: 1.7;
+      letter-spacing: 0.08em;
       text-transform: uppercase;
-      color: var(--void);
-      opacity: 0.5;
-      transition: opacity 200ms var(--ease), transform 200ms var(--ease);
-    }
-
-    .issue-row:hover .issue-arrow {
-      opacity: 1;
-      color: var(--rand-blue);
-      transform: translateX(4px);
-    }
-
-    /* ══ Colophon ═════════════════════════════════════════════════════ */
-    .colophon {
-      max-width: 1400px;
-      margin: 4rem auto 0;
-      padding: 3rem 2rem 2rem;
-      border-top: 1px solid var(--void);
-    }
-
-    .colophon-inner {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 3rem;
-    }
-
-    .colophon-block .uppercase-label {
-      margin-bottom: 0.75rem;
-      color: var(--alert-red);
-    }
-
-    .colophon-block p {
-      font-size: 14px;
-      line-height: 1.6;
-      color: var(--void);
+      color: rgba(26, 26, 26, 0.6);
       margin: 0;
     }
-
-    .colophon-block em {
-      font-style: italic;
+    .sisters-text a {
       color: var(--rand-blue);
+      text-decoration: none;
+      border-bottom: 1px solid currentColor;
+    }
+    .sisters-text a:hover { color: var(--alert-red); }
+    .sisters-future {
+      color: rgba(26, 26, 26, 0.45);
+      border-bottom: 1px dashed rgba(26, 26, 26, 0.3);
     }
 
-    /* ══ Responsive ═══════════════════════════════════════════════════ */
-    @media (max-width: 960px) {
-      .cover {
-        padding: 2rem 0 3.5rem;
-      }
-
-      .cover-masthead {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 0.75rem 1rem;
-      }
-
-      .cover-meta {
+    /* ══ Responsive ══════════════════════════════════════════ */
+    @media (max-width: 720px) {
+      .hero { padding: 3rem 0 2.5rem; }
+      .featured { padding: 2.5rem 0; }
+      .featured-card { padding: 2rem 1.5rem; }
+      .coming { padding: 2.5rem 0; }
+      .coming-row {
         grid-template-columns: 1fr;
-        gap: 2rem;
+        gap: 0.5rem;
+        padding: 1rem 0;
       }
-
-      .issue-link {
-        grid-template-columns: 40px 1fr;
-        gap: 1rem;
-        padding: 1.75rem 0.5rem;
-      }
-
-      .issue-symbol,
-      .issue-meta,
-      .issue-arrow {
-        grid-column: 2;
-      }
-
-      .issue-index {
-        grid-row: 1 / span 4;
-      }
-
-      .issue-body {
-        grid-column: 2;
-      }
-
-      .colophon-inner {
-        grid-template-columns: 1fr;
-        gap: 1.75rem;
-      }
-    }
-
-    @media (max-width: 560px) {
-      .cover-inner,
-      .catalog,
-      .colophon {
-        padding-left: 1.25rem;
-        padding-right: 1.25rem;
-      }
+      .coming-badge { justify-self: start; }
+      .hero-ctas { gap: 0.5rem; }
     }
   </style>
 </BaseLayout>

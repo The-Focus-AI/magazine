@@ -1,12 +1,13 @@
 ---
 import '../styles/global.css';
+import NewsletterPopup from '../components/NewsletterPopup.astro';
 
 interface Props {
   title: string;
   description?: string;
 }
 
-const { title, description = 'THE FOCUS.AI · Research memoranda on the state and shape of AI engineering.' } = Astro.props;
+const { title, description = 'TheFocus.AI Magazine — field reports from the front of AI engineering.' } = Astro.props;
 ---
 <!doctype html>
 <html lang="en">
@@ -29,11 +30,11 @@ const { title, description = 'THE FOCUS.AI · Research memoranda on the state an
   <body>
     <header class="site-header">
       <div class="site-header-inner">
-        <a href="/" class="wordmark" aria-label="TheFocus.AI Magazines">
+        <a href="/" class="wordmark" aria-label="TheFocus.AI Magazine">
           <span class="wordmark-block" aria-hidden="true"></span>
           <span class="wordmark-text">THEFOCUS.AI</span>
           <span class="wordmark-divider" aria-hidden="true">·</span>
-          <span class="wordmark-sub">MAGAZINES</span>
+          <span class="wordmark-sub">MAGAZINE</span>
         </a>
       </div>
     </header>
@@ -48,5 +49,7 @@ const { title, description = 'THE FOCUS.AI · Research memoranda on the state an
         <span><a href="https://github.com/The-Focus-AI/magazine">Source on GitHub</a></span>
       </div>
     </footer>
+
+    <NewsletterPopup />
   </body>
 </html>
