@@ -717,7 +717,7 @@ const imp = imprint[vertical];
       .read-section-title { font-size: 28pt !important; line-height: 1.05 !important; }
       .read-section-dek { font-size: 12pt !important; }
 
-      /* Pull quote — keep together, span the column */
+      /* Pull quote — sits above the columns, full width */
       .read-pullquote {
         font-size: 16pt !important;
         line-height: 1.25 !important;
@@ -725,19 +725,23 @@ const imp = imprint[vertical];
         padding: 12pt 0 12pt 14pt !important;
         page-break-inside: avoid;
         break-inside: avoid;
+        column-span: all !important;
       }
 
-      /* Body — single column on paper, finer type */
+      /* Body — two columns on paper, like the web reader.
+         Foreword / editor's note stays single-column for editorial weight. */
       .read-section-body {
-        column-count: 1 !important;
-        column-gap: 0 !important;
-        column-rule: none !important;
-        font-size: 10.5pt !important;
-        line-height: 1.5 !important;
-        max-width: 5.5in !important;
-        margin: 0 auto !important;
+        column-count: 2 !important;
+        column-gap: 22pt !important;
+        column-rule: 0.5pt solid rgba(20, 19, 16, 0.18) !important;
+        font-size: 10pt !important;
+        line-height: 1.45 !important;
       }
       .is-foreword .read-section-body {
+        column-count: 1 !important;
+        column-rule: none !important;
+        max-width: 5in !important;
+        margin: 0 auto !important;
         font-size: 11.5pt !important;
         line-height: 1.55 !important;
       }
@@ -754,15 +758,18 @@ const imp = imprint[vertical];
         margin: 0.04em 0.08em 0 0 !important;
       }
 
-      /* Sub-headings inside a chapter — keep with following content */
+      /* Sub-headings inside a chapter — span both columns, keep with content */
       .read-section-body :global(h2) {
-        font-size: 16pt !important;
-        margin: 18pt 0 8pt !important;
-        column-span: initial !important;
+        font-size: 14pt !important;
+        margin: 14pt 0 6pt !important;
+        column-span: all !important;
         break-before: auto !important;
         page-break-after: avoid;
         break-after: avoid;
-        padding-top: 12pt !important;
+        padding-top: 10pt !important;
+      }
+      .is-foreword .read-section-body :global(h2) {
+        column-span: initial !important;
       }
       .read-section-body :global(h3) {
         font-size: 13pt !important;
@@ -783,6 +790,10 @@ const imp = imprint[vertical];
         margin: 14pt 0 !important;
         page-break-inside: avoid;
         break-inside: avoid;
+      }
+      .read-section-body :global(figure.figure-span) {
+        column-span: all !important;
+        margin: 18pt 0 !important;
       }
 
       .read-section-body :global(ul),
