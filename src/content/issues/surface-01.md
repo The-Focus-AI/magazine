@@ -8,6 +8,7 @@ voice: architecture
 tagline: "The chat log is a box, and the box is running out of room."
 summary: "For three years conversational interfaces served as the default presentation layer for AI. Six different proposals answer the core question of what agents should be permitted to display. SURFACE removes brand affiliations and reveals three distinct architectural layers — payload, transport, distribution."
 cover_color: "#e85d34"
+draft: true
 ---
 
 Six proposals, three layers, one question: what should agents be permitted to display?

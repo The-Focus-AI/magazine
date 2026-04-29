@@ -1,4 +1,4 @@
-# The Focus.AI Magazines
+# TheFocus.AI Magazines
 
 Publication line covering the state and shape of AI engineering. Six verticals:
 

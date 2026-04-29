@@ -6,7 +6,7 @@ import CoverEmblem from '../../components/CoverEmblem.astro';
 // screen breakpoints competing with the @page rules below.
 
 export async function getStaticPaths() {
-  const issues = await getCollection('issues');
+  const issues = (await getCollection('issues')).filter((i) => !i.data.draft);
   return issues.map((issue) => ({
     params: { slug: issue.slug },
     props: { issue },
@@ -91,7 +91,7 @@ const verticalUp = verticalLabel[vertical].toUpperCase();
       <section class="print-cover">
         <header class="print-cover-top">
           <div class="print-cover-publisher">
-            Focus.AI Press<br/>
+            TheFocus.AI Press<br/>
             Cornwall, Connecticut
           </div>
           <div class="print-cover-number">
@@ -117,7 +117,7 @@ const verticalUp = verticalLabel[vertical].toUpperCase();
 
         <footer class="print-cover-footer">
           <span>{verticalUp}—{issueNumPadded}</span>
-          <span>The Focus.AI Magazines</span>
+          <span>TheFocus.AI Magazines</span>
         </footer>
       </section>
 
@@ -192,7 +192,7 @@ const verticalUp = verticalLabel[vertical].toUpperCase();
           <dt>Issue</dt>
           <dd>{verticalUp} No. {issueNumPadded} · {publishedString}<br/>{issue.data.issue_title}</dd>
           <dt>Published by</dt>
-          <dd>Focus.AI Press, Cornwall, Connecticut</dd>
+          <dd>TheFocus.AI Press, Cornwall, Connecticut</dd>
           <dt>Set in</dt>
           <dd>Fraunces, Newsreader, and {vertical === 'runtime' || vertical === 'harness' ? 'JetBrains Mono' : 'IBM Plex Mono'}.</dd>
           <dt>Voice</dt>

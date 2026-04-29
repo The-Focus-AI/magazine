@@ -2,12 +2,14 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 
-const issues = (await getCollection('issues')).sort((a, b) => {
-  // STATE first (the main report), then architecture issues by published date desc
-  if (a.data.vertical === 'state') return -1;
-  if (b.data.vertical === 'state') return 1;
-  return b.data.published.getTime() - a.data.published.getTime();
-});
+const issues = (await getCollection('issues'))
+  .filter((i) => !i.data.draft)
+  .sort((a, b) => {
+    // STATE first (the main report), then architecture issues by published date desc
+    if (a.data.vertical === 'state') return -1;
+    if (b.data.vertical === 'state') return 1;
+    return b.data.published.getTime() - a.data.published.getTime();
+  });
 
 const verticalLabel = {
   state: 'STATE',
@@ -38,9 +40,7 @@ const verticalSymbol = {
 
 const thisYear = new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' }).toUpperCase();
 
-// Count only non-draft issues for the index metadata
-const publishedCount = issues.filter((i) => !i.data.draft).length;
-const totalCount = issues.length;
+const publishedCount = issues.length;
 ---
 <BaseLayout title="THEFOCUS.AI · Magazines">
   <section class="cover">
@@ -77,28 +77,10 @@ const totalCount = issues.length;
 
       <p class="cover-lede">
         A publication line distilling signal from the noise of an industry
-        rearranging itself in real time.
-        Six verticals. <span class="mono">{publishedCount}</span> of
-        <span class="mono">{totalCount}</span> issues available.
+        rearranging itself in real time. The first issue is a dispatch from
+        AI Engineer Miami — two days, four chapters, the patterns moving
+        underneath.
       </p>
-
-      <div class="cover-meta">
-        <div class="cover-meta-col">
-          <div class="uppercase-label">Reportage</div>
-          <p class="cover-meta-text">
-            <strong>STATE</strong> — conference reports and synthesis pieces,
-            written in the editor's voice. Named speakers, situated arguments.
-          </p>
-        </div>
-        <div class="cover-meta-col">
-          <div class="uppercase-label">Reference</div>
-          <p class="cover-meta-text">
-            <strong>SURFACE · RUNTIME · HARNESS · LOCAL · WIRE</strong> —
-            architecture explainers. Declarative, system-focused, heavily
-            cited. Meant to be returned to.
-          </p>
-        </div>
-      </div>
     </div>
   </section>
 
@@ -108,7 +90,7 @@ const totalCount = issues.length;
         <span class="spot-number">§</span>&nbsp;Current Issues
       </div>
       <div class="catalog-count mono">
-        {issues.length.toString().padStart(2, '0')} / {issues.length.toString().padStart(2, '0')}
+        {issues.length.toString().padStart(2, '0')} {issues.length === 1 ? 'ISSUE' : 'ISSUES'}
       </div>
     </div>
 
@@ -156,35 +138,6 @@ const totalCount = issues.length;
     </ol>
   </section>
 
-  <section class="colophon">
-    <div class="colophon-inner">
-      <div class="colophon-block">
-        <div class="uppercase-label">On Voice</div>
-        <p>
-          We use two registers. <em>Reportage</em> is the editor's voice —
-          first-person, named, situated. <em>Architecture</em> is the house
-          voice — declarative, third-person, heavily cited, meant to be
-          returned to. Each issue declares which it uses.
-        </p>
-      </div>
-      <div class="colophon-block">
-        <div class="uppercase-label">On Structure</div>
-        <p>
-          Six verticals, each ongoing. New issues drop without fanfare.
-          Cross-references connect the reference issues into a single atlas;
-          STATE synthesizes across the atlas.
-        </p>
-      </div>
-      <div class="colophon-block">
-        <div class="uppercase-label">On Chat</div>
-        <p>
-          Every issue, section, source, and concept lives as markdown in a
-          single repository. An <a href="/chat">MCP chat interface</a> reads
-          the same files we do. Connect your own client; or use ours.
-        </p>
-      </div>
-    </div>
-  </section>
 
   <style>
     /* ══ Cover (hero) ═════════════════════════════════════════════════ */

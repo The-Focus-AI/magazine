@@ -17,4 +17,4 @@ This issue has two long dispatches — Day One and Day Two — plus a closing on
 
 The patterns haven't refrozen. That's the whole point.
 
-— Will Schenk · The Focus.AI
+— Will Schenk · TheFocus.AI
