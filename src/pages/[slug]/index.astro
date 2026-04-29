@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import CoverEmblem from '../../components/CoverEmblem.astro';
+import EmailSignup from '../../components/EmailSignup.astro';
 import '../../styles/magazine.css';
 
 export async function getStaticPaths() {
@@ -155,6 +156,13 @@ const imp = imprint[vertical];
           </section>
         );
       })}
+
+      <!-- ═════ Newsletter ═════ -->
+      <EmailSignup
+        variant="magazine"
+        heading="Stay close to the next issue."
+        blurb="STATE drops irregularly. Get notified when the next dispatch lands."
+      />
 
       <!-- ═════ Closing ═════ -->
       <footer class="read-closer">

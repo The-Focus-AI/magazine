@@ -1,0 +1,183 @@
+---
+interface Props {
+  heading?: string;
+  blurb?: string;
+  variant?: 'landing' | 'magazine';
+}
+const {
+  heading = 'Subscribe to TheFocus.AI',
+  blurb = 'New issues, irregular cadence. No marketing — just signal.',
+  variant = 'landing',
+} = Astro.props;
+---
+<section class={`signup signup-${variant}`}>
+  <div class="signup-inner">
+    <div class="signup-eyebrow">Newsletter</div>
+    <h2 class="signup-heading">{heading}</h2>
+    {blurb && <p class="signup-blurb">{blurb}</p>}
+
+    <form
+      action="https://buttondown.com/api/emails/embed-subscribe/thefocusai"
+      method="post"
+      class="signup-form"
+    >
+      <label class="visually-hidden" for="bd-email">Email address</label>
+      <input
+        type="email"
+        name="email"
+        id="bd-email"
+        required
+        placeholder="you@domain.com"
+        class="signup-input"
+      />
+      <button type="submit" class="signup-button">Subscribe →</button>
+    </form>
+
+    <p class="signup-fineprint">
+      Powered by{' '}
+      <a href="https://buttondown.com/refer/thefocusai" target="_blank" rel="noopener noreferrer">
+        Buttondown
+      </a>.
+    </p>
+  </div>
+
+  <style>
+    .signup {
+      padding: 4rem 2rem;
+      border-top: 1px solid var(--rule-subtle, rgba(20, 19, 16, 0.14));
+    }
+
+    .signup-inner {
+      max-width: 560px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .signup-eyebrow {
+      font-family: 'Courier Prime', 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: var(--alert-red, #c2492a);
+      margin-bottom: 1rem;
+    }
+
+    .signup-heading {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-weight: 900;
+      font-size: clamp(1.75rem, 3vw, 2.5rem);
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      margin: 0 0 1rem;
+      color: var(--void, #1a1a1a);
+    }
+
+    .signup-blurb {
+      font-size: 16px;
+      line-height: 1.5;
+      color: rgba(26, 26, 26, 0.7);
+      margin: 0 0 2rem;
+    }
+
+    .signup-form {
+      display: flex;
+      gap: 0.5rem;
+      max-width: 440px;
+      margin: 0 auto;
+      flex-wrap: wrap;
+    }
+
+    .signup-input {
+      flex: 1 1 240px;
+      font-family: inherit;
+      font-size: 15px;
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--void, #1a1a1a);
+      background: #fff;
+      border-radius: 0;
+      color: var(--void, #1a1a1a);
+    }
+
+    .signup-input:focus {
+      outline: 2px solid var(--rand-blue, #0055aa);
+      outline-offset: 1px;
+    }
+
+    .signup-button {
+      font-family: 'Courier Prime', 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      padding: 0.75rem 1.5rem;
+      background: var(--void, #1a1a1a);
+      color: var(--paper, #f4ead6);
+      border: 1px solid var(--void, #1a1a1a);
+      cursor: pointer;
+      transition: background 150ms ease, color 150ms ease;
+    }
+
+    .signup-button:hover {
+      background: var(--rand-blue, #0055aa);
+      border-color: var(--rand-blue, #0055aa);
+    }
+
+    .signup-fineprint {
+      margin: 1.5rem 0 0;
+      font-family: 'Courier Prime', 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(26, 26, 26, 0.55);
+    }
+
+    .signup-fineprint a {
+      color: inherit;
+      border-bottom: 1px solid currentColor;
+      text-decoration: none;
+    }
+
+    /* Magazine-interior variant — uses --mag-* tokens from magazine.css */
+    .signup-magazine {
+      border-top-color: var(--mag-rule, rgba(20, 19, 16, 0.14));
+    }
+    .signup-magazine .signup-eyebrow { color: var(--mag-accent, #c2492a); }
+    .signup-magazine .signup-heading {
+      font-family: var(--mag-display, 'Fraunces', serif);
+      font-style: italic;
+      font-weight: 400;
+      letter-spacing: -0.025em;
+      color: var(--mag-ink, #141310);
+    }
+    .signup-magazine .signup-blurb {
+      font-family: var(--mag-body, 'Newsreader', serif);
+      color: var(--mag-ink-soft, #2a2721);
+    }
+    .signup-magazine .signup-input {
+      border-color: var(--mag-ink, #141310);
+      background: var(--mag-paper-2, #e2d9ba);
+      color: var(--mag-ink, #141310);
+    }
+    .signup-magazine .signup-button {
+      background: var(--mag-ink, #141310);
+      color: var(--mag-paper, #ece4cc);
+      border-color: var(--mag-ink, #141310);
+    }
+    .signup-magazine .signup-button:hover {
+      background: var(--mag-accent, #c2492a);
+      border-color: var(--mag-accent, #c2492a);
+    }
+
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+  </style>
+</section>
