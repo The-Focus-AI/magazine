@@ -2,7 +2,7 @@
 issue: state-01
 section_number: 0
 section_marker: "From the Editor"
-title: "The Forces Have Moved"
+title: "A Note Before Beginning"
 summary: "Why STATE exists, and why this issue. Patterns are frozen resolutions of forces — and the forces just moved. Two days in Miami, one through-line."
 pull_quote: "Patterns are frozen resolutions of forces. When the forces move, every pattern you trusted becomes, for a little while, a question again."
 ---
