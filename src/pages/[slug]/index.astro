@@ -562,14 +562,258 @@ const imp = imprint[vertical];
       }
     }
 
+    /* ═════════════════════════════════════════════════════════════════
+       PRINT STYLES — tuned for window.print() / "Save as PDF" in Chrome.
+       Chrome supports @page, @page :first, page-break-*, and basic
+       running headers via string-set + @top-* / @bottom-* (limited).
+       Goal: a magazine-grade printable PDF without paged.js.
+       ═════════════════════════════════════════════════════════════════ */
+
     @media print {
-      .issue-toolbar,
-      .site-header,
-      .site-footer { display: none !important; }
-      body { background: var(--mag-paper); }
-      .read { max-width: none; padding: 0; }
-      .read-section-body { font-size: 11pt; line-height: 1.45; }
-      [data-mag]::before { display: none; }
+      /* Page setup — US Letter, generous margins for body text.
+         @page background paints the area outside our content boxes
+         so the cream paper extends edge-to-edge, not just the box. */
+      @page {
+        size: letter;
+        margin: 0.75in 0.65in 0.85in;
+        background: #ece4cc;  /* --mag-paper for state */
+      }
+
+      /* The cover gets its own zero-margin page so it can fill the sheet */
+      @page :first {
+        margin: 0;
+      }
+
+      /* Hide all interactive / web-only chrome */
+      :global(.site-header),
+      :global(.site-footer),
+      :global(.signup),
+      :global(#newsletter-popup),
+      .cover-cta-hint,
+      .read-section-folio { display: none !important; }
+
+      /* Force browsers to print colors as-specified */
+      :global(html),
+      :global(body),
+      :global(main),
+      :global([data-mag]),
+      .mag-root {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+
+      /* Paint the page cream from html down — --mag-paper is scoped
+         to [data-mag], so at the document level we use the hex. */
+      :global(html.np-noop),
+      :global(html),
+      :global(body) {
+        background: #ece4cc !important;
+        background-color: #ece4cc !important;
+        font-size: 11pt;
+        line-height: 1.45;
+      }
+      :global(main),
+      .mag-root {
+        background: #ece4cc !important;
+        background-color: #ece4cc !important;
+      }
+      /* [data-mag] gives itself min-height:100vh which is undefined
+         in paged-print context — clear it so it can flow naturally */
+      :global([data-mag]) {
+        min-height: 0 !important;
+        background: #ece4cc !important;
+      }
+      :global(body)::before { display: none !important; }  /* ledger lines off */
+      :global([data-mag])::before { display: none !important; }
+      :global(main) { padding: 0 !important; }
+
+      /* ─── Cover — first page, edge to edge ─────────────────────── */
+      .cover-wrap {
+        max-width: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+      .cover {
+        height: 11in !important;
+        min-height: 11in !important;
+        page-break-after: always;
+        break-after: page;
+        padding: 0.85in 0.75in !important;
+        background: #ece4cc !important;
+        box-sizing: border-box !important;
+      }
+      .cover .masthead {
+        font-size: 96pt !important;
+        animation: none !important;
+      }
+      .cover-tagline,
+      .cover-lines { animation: none !important; }
+      .emblem { animation: none !important; max-width: 3.5in !important; }
+      .cover-title { font-size: 32pt !important; }
+      .cover-dek { font-size: 13pt !important; }
+
+      /* ─── Article wrapper ──────────────────────────────────────── */
+      .read {
+        max-width: none !important;
+        padding: 0 !important;
+      }
+
+      /* ─── Opener / TOC — its own page after the cover ──────────── */
+      .read-opener {
+        page-break-before: always;
+        break-before: page;
+        page-break-after: always;
+        break-after: page;
+        padding-top: 0.1in;
+        margin-bottom: 0 !important;
+      }
+      .opener-meta {
+        font-size: 9pt !important;
+        margin-bottom: 24pt !important;
+      }
+      .opener-abstract { max-width: 5.5in !important; }
+      .opener-abstract p { font-size: 12pt !important; line-height: 1.5 !important; }
+      .abstract-label { font-size: 9pt !important; }
+      .inline-toc {
+        margin-top: 36pt !important;
+        max-width: 100% !important;
+      }
+      .inline-toc a {
+        grid-template-columns: 88pt 1fr !important;
+        gap: 14pt !important;
+        padding: 10pt 0 !important;
+      }
+      .toc-title { font-size: 14pt !important; }
+      .toc-num { font-size: 9pt !important; }
+
+      /* ─── Sections — every chapter starts on a new page ────────── */
+      .read-section {
+        page-break-before: always;
+        break-before: page;
+        margin: 0 !important;
+        padding-top: 0 !important;
+        border-top: none !important;
+      }
+      .read-section.is-foreword {
+        /* Editor's note runs immediately after TOC, no forced break */
+        page-break-before: auto;
+        break-before: auto;
+      }
+
+      /* Section header — never split title from its first paragraph */
+      .read-section-head {
+        page-break-after: avoid;
+        break-after: avoid;
+        margin-bottom: 16pt !important;
+        padding-bottom: 10pt !important;
+        grid-template-columns: 80pt 1fr !important;
+      }
+      .read-section-head::after {
+        width: 36pt !important;
+        height: 6pt !important;
+        bottom: -4pt !important;
+      }
+      .read-section-marker { font-size: 10pt !important; }
+      .read-section-title { font-size: 28pt !important; line-height: 1.05 !important; }
+      .read-section-dek { font-size: 12pt !important; }
+
+      /* Pull quote — keep together, span the column */
+      .read-pullquote {
+        font-size: 16pt !important;
+        line-height: 1.25 !important;
+        margin: 14pt 0 18pt !important;
+        padding: 12pt 0 12pt 14pt !important;
+        page-break-inside: avoid;
+        break-inside: avoid;
+      }
+
+      /* Body — single column on paper, finer type */
+      .read-section-body {
+        column-count: 1 !important;
+        column-gap: 0 !important;
+        column-rule: none !important;
+        font-size: 10.5pt !important;
+        line-height: 1.5 !important;
+        max-width: 5.5in !important;
+        margin: 0 auto !important;
+      }
+      .is-foreword .read-section-body {
+        font-size: 11.5pt !important;
+        line-height: 1.55 !important;
+      }
+
+      .read-section-body :global(p) {
+        margin: 0 0 0.8em !important;
+        orphans: 3;
+        widows: 3;
+      }
+
+      /* Drop cap — smaller in print */
+      .read-section-body :global(p:first-of-type::first-letter) {
+        font-size: 3.4em !important;
+        margin: 0.04em 0.08em 0 0 !important;
+      }
+
+      /* Sub-headings inside a chapter — keep with following content */
+      .read-section-body :global(h2) {
+        font-size: 16pt !important;
+        margin: 18pt 0 8pt !important;
+        column-span: initial !important;
+        break-before: auto !important;
+        page-break-after: avoid;
+        break-after: avoid;
+        padding-top: 12pt !important;
+      }
+      .read-section-body :global(h3) {
+        font-size: 13pt !important;
+        margin: 14pt 0 6pt !important;
+        page-break-after: avoid;
+        break-after: avoid;
+      }
+
+      .read-section-body :global(blockquote) {
+        font-size: 12pt !important;
+        margin: 12pt 0 !important;
+        padding: 0 0 0 14pt !important;
+        page-break-inside: avoid;
+        break-inside: avoid;
+      }
+
+      .read-section-body :global(figure) {
+        margin: 14pt 0 !important;
+        page-break-inside: avoid;
+        break-inside: avoid;
+      }
+
+      .read-section-body :global(ul),
+      .read-section-body :global(ol) {
+        margin: 0 0 0.9em 1.1em !important;
+      }
+
+      .read-section-end {
+        margin-top: 18pt !important;
+        font-size: 16pt !important;
+      }
+
+      /* ─── Closer — its own page ───────────────────────────────── */
+      .read-closer {
+        page-break-before: always;
+        break-before: page;
+        margin-top: 0 !important;
+        padding-top: 0.5in !important;
+        border-top: none !important;
+      }
+      .read-closer .bar { height: 14pt !important; max-width: 240pt !important; }
+      .closer-lede { font-size: 14pt !important; }
+      .closer-fine { font-size: 9pt !important; }
+      .closer-nav { display: none !important; }
+      .closer-fin { font-size: 12pt !important; }
+
+      /* No links should turn blue in print */
+      :global(a) {
+        color: inherit !important;
+        text-decoration: none !important;
+      }
     }
   </style>
 </BaseLayout>
