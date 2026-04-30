@@ -11,6 +11,42 @@ concepts:
   - instruction-budget
   - gen-3-sdk
   - code-mode
+go_deeper:
+  - kind: person
+    name: "Geoffrey Huntley"
+    role: "Independent dev, ex-Sourcegraph. The identity-collapse keynote."
+    url: "https://ghuntley.com"
+  - kind: person
+    name: "Dax Raad"
+    role: "OpenCode. Argued there are no good ideas in 15 minutes."
+    url: "https://x.com/thdxr"
+  - kind: person
+    name: "Dex Horthy"
+    role: "HumanLayer. Walked back his own 12-factor-agents advice."
+    url: "https://github.com/dexhorthy"
+  - kind: person
+    name: "Kent C. Dodds"
+    role: "Built Kody — domain-specific coding agent for EpicWeb."
+    url: "https://kentcdodds.com"
+  - kind: person
+    name: "Ben Davis"
+    role: "Coined Gen-3 SDK — coding-agent as runtime."
+  - kind: project
+    name: "Cloudflare Code Mode"
+    role: "Sandboxed isolates as agent execution substrate."
+    url: "https://blog.cloudflare.com/code-mode/"
+  - kind: project
+    name: "Claude Agent SDK"
+    role: "Anthropic's reference for the Gen-3 pattern."
+    url: "https://docs.anthropic.com/en/docs/claude-code/sdk"
+  - kind: project
+    name: "OpenCode"
+    role: "Open-source coding-agent SDK."
+    url: "https://opencode.ai"
+  - kind: read
+    name: "A Pattern Language — Christopher Alexander"
+    role: "The frame underneath all of this — patterns as frozen resolutions of forces."
+    url: "https://en.wikipedia.org/wiki/A_Pattern_Language"
 sources:
   - type: talk
     slug: huntley-identity

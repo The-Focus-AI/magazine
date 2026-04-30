@@ -12,6 +12,22 @@ concepts:
   - sub-agents
   - knowledge-graph
   - inference-cost
+go_deeper:
+  - kind: project
+    name: "Hermes"
+    role: "Memory-and-persona framework — the model the closing argument liked."
+    url: "https://github.com/AdjectiveAllison/hermes"
+  - kind: person
+    name: "Nyah Macklin"
+    role: "Neo4j. Context graphs as decision traces."
+  - kind: project
+    name: "Neo4j"
+    role: "Graph DB underneath much of the agent-memory work."
+    url: "https://neo4j.com"
+  - kind: read
+    name: "Cybernetics — Norbert Wiener"
+    role: "The command-and-control frame the closing argument gestured at."
+    url: "https://en.wikipedia.org/wiki/Cybernetics_(book)"
 ---
 
 The open questions I'm leaving the conference with.

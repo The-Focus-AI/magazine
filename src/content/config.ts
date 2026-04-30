@@ -47,6 +47,20 @@ const sections = defineCollection({
       .optional(),
     concepts: z.array(z.string()).optional(),
     pull_quote: z.string().optional(),
+    /* Per-section sidebar — bios + project links + reference reading,
+       hand-curated. Renders as a "Go Deeper" sidebar on web and as a
+       footnote-style block at the end of the section in print. */
+    go_deeper: z
+      .array(
+        z.object({
+          kind: z.enum(['person', 'project', 'talk', 'read', 'watch']),
+          name: z.string(),
+          role: z.string().optional(),
+          url: z.string().url().optional(),
+          note: z.string().optional(),
+        })
+      )
+      .optional(),
     draft: z.boolean().default(false),
   }),
 });

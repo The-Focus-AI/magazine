@@ -144,15 +144,40 @@ const imp = imprint[vertical];
               </span>
             </header>
 
-            {section.data.pull_quote && !isForeword && (
-              <aside class="read-pullquote">{section.data.pull_quote}</aside>
-            )}
+            <div class={`read-section-grid ${section.data.go_deeper && section.data.go_deeper.length > 0 ? 'has-sidebar' : ''}`}>
+              <div class="read-section-main">
+                {section.data.pull_quote && !isForeword && (
+                  <aside class="read-pullquote">{section.data.pull_quote}</aside>
+                )}
 
-            <div class="read-section-body">
-              <Content />
+                <div class="read-section-body">
+                  <Content />
+                </div>
+
+                <div class="read-section-end">§</div>
+              </div>
+
+              {section.data.go_deeper && section.data.go_deeper.length > 0 && (
+                <aside class="go-deeper">
+                  <div class="go-deeper-label">Go Deeper</div>
+                  <ul class="go-deeper-list">
+                    {section.data.go_deeper.map((ref) => {
+                      const Tag = ref.url ? 'a' : 'div';
+                      return (
+                        <li class={`gd-item gd-${ref.kind}`}>
+                          <Tag {...(ref.url ? { href: ref.url, target: '_blank', rel: 'noopener noreferrer' } : {})}>
+                            <span class="gd-kind">{ref.kind}</span>
+                            <span class="gd-name">{ref.name}</span>
+                            {ref.role && <span class="gd-role">{ref.role}</span>}
+                            {ref.note && <span class="gd-note">{ref.note}</span>}
+                          </Tag>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </aside>
+              )}
             </div>
-
-            <div class="read-section-end">§</div>
           </section>
         );
       })}
@@ -215,7 +240,7 @@ const imp = imprint[vertical];
 
     /* ═════ Article ═════ */
     .read {
-      max-width: 920px;
+      max-width: 1280px;
       margin: 0 auto;
       padding: 72px 48px 100px;
       position: relative;
@@ -302,6 +327,106 @@ const imp = imprint[vertical];
       padding-top: 48px;
       border-top: 1px solid var(--mag-rule);
     }
+
+    /* Two-column section: body + sticky sidebar.
+       Single column when no sidebar, or when foreword. */
+    .read-section-grid {
+      display: block;
+    }
+    .read-section-grid.has-sidebar {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 280px;
+      gap: 56px;
+      align-items: start;
+    }
+    .is-foreword .read-section-grid {
+      display: block;
+    }
+    .read-section-main {
+      min-width: 0;
+    }
+
+    /* ─── Go Deeper sidebar ─── */
+    .go-deeper {
+      position: sticky;
+      top: 24px;
+      font-family: var(--mag-body);
+      font-size: 13px;
+      line-height: 1.45;
+      padding-left: 24px;
+      border-left: 1px solid var(--mag-rule);
+    }
+    .go-deeper-label {
+      font-family: var(--mag-mono);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: var(--mag-accent);
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--mag-ink);
+    }
+    .go-deeper-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .gd-item > a,
+    .gd-item > div {
+      display: block;
+      text-decoration: none;
+      color: var(--mag-ink);
+      padding: 10px 0;
+      border-bottom: 1px solid var(--mag-rule);
+      transition: color 150ms ease, transform 150ms ease;
+    }
+    .gd-item > a:hover {
+      color: var(--mag-accent-deep);
+      transform: translateX(2px);
+    }
+    .gd-kind {
+      display: inline-block;
+      font-family: var(--mag-mono);
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--mag-accent);
+      margin-bottom: 4px;
+    }
+    .gd-name {
+      display: block;
+      font-family: var(--mag-display);
+      font-style: italic;
+      font-size: 16px;
+      line-height: 1.2;
+      letter-spacing: -0.01em;
+      color: var(--mag-ink);
+      margin-bottom: 4px;
+    }
+    .gd-role,
+    .gd-note {
+      display: block;
+      font-size: 12.5px;
+      line-height: 1.4;
+      color: var(--mag-ink-soft);
+    }
+    .gd-note {
+      margin-top: 4px;
+      font-style: italic;
+    }
+    .gd-item > a::after {
+      content: ' →';
+      color: var(--mag-accent);
+      opacity: 0;
+      transition: opacity 150ms ease;
+    }
+    .gd-item > a:hover::after { opacity: 1; }
+
     .read-section-head {
       display: grid;
       grid-template-columns: 80px 1fr 120px;
@@ -547,6 +672,22 @@ const imp = imprint[vertical];
     }
 
     /* ═════ Responsive ═════ */
+    @media (max-width: 1080px) {
+      /* Collapse sidebar to full-width block below the body */
+      .read-section-grid.has-sidebar {
+        grid-template-columns: 1fr;
+        gap: 32px;
+      }
+      .go-deeper {
+        position: static;
+        padding-left: 0;
+        padding-top: 24px;
+        border-left: none;
+        border-top: 1px solid var(--mag-ink);
+        max-width: 720px;
+      }
+    }
+
     @media (max-width: 900px) {
       .read { padding: 48px 24px 80px; }
       .read-section-head { grid-template-columns: 60px 1fr; }
@@ -570,12 +711,12 @@ const imp = imprint[vertical];
        ═════════════════════════════════════════════════════════════════ */
 
     @media print {
-      /* Page setup — US Letter, generous margins for body text.
-         @page background paints the area outside our content boxes
-         so the cream paper extends edge-to-edge, not just the box. */
+      /* Page setup — US Letter with magazine-style margins.
+         Outer margin is wider so it can host a "Go Deeper" sidebar
+         in the print-side annotations. */
       @page {
         size: letter;
-        margin: 0.75in 0.65in 0.85in;
+        margin: 0.9in 0.85in 1in;
         background: #ece4cc;  /* --mag-paper for state */
       }
 
@@ -805,6 +946,43 @@ const imp = imprint[vertical];
         margin-top: 18pt !important;
         font-size: 16pt !important;
       }
+
+      /* ─── Go Deeper — print as end-of-section block ───────────── */
+      .read-section-grid.has-sidebar {
+        display: block !important;
+      }
+      .go-deeper {
+        position: static !important;
+        padding: 14pt 0 0 !important;
+        margin-top: 18pt !important;
+        border-left: none !important;
+        border-top: 1pt solid var(--mag-ink) !important;
+        column-span: all !important;
+        page-break-inside: avoid;
+        break-inside: avoid;
+      }
+      .go-deeper-label {
+        font-size: 9pt !important;
+        margin-bottom: 8pt !important;
+        padding-bottom: 4pt !important;
+        border-bottom: 0.5pt solid var(--mag-ink) !important;
+      }
+      .go-deeper-list {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        column-gap: 22pt !important;
+        gap: 8pt 22pt !important;
+      }
+      .gd-item > a,
+      .gd-item > div {
+        padding: 4pt 0 !important;
+        border-bottom: 0.5pt solid rgba(20, 19, 16, 0.18) !important;
+      }
+      .gd-kind { font-size: 7.5pt !important; margin-bottom: 1pt !important; }
+      .gd-name { font-size: 11pt !important; margin-bottom: 1pt !important; }
+      .gd-role,
+      .gd-note { font-size: 9pt !important; line-height: 1.35 !important; }
+      .gd-item > a::after { content: '' !important; }
 
       /* ─── Closer — its own page ───────────────────────────────── */
       .read-closer {

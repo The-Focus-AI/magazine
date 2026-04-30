@@ -13,6 +13,38 @@ concepts:
   - token-consumption
   - code-mode
   - local-inference
+go_deeper:
+  - kind: person
+    name: "Adam House"
+    role: "Workplace adoption — humans-learning-to-delegate."
+  - kind: person
+    name: "Dave Kiss"
+    role: "Mux. The next user won't have eyes."
+    url: "https://www.davekiss.com"
+  - kind: person
+    name: "Jay Blalock"
+    role: "Agentuity — the agent-as-customer pitch."
+    url: "https://agentuity.com"
+  - kind: person
+    name: "Laurie Voss"
+    role: "Anthropic. The skills-vs-MCP eval data."
+    url: "https://seldo.com"
+  - kind: person
+    name: "Sunil Pai"
+    role: "Cloudflare. Software 3.5 — code-mode in production."
+    url: "https://x.com/threepointone"
+  - kind: person
+    name: "Andrew Chieng"
+    role: "Cerebras. Token economics at the inference frontier."
+    url: "https://cerebras.ai"
+  - kind: project
+    name: "Agentuity"
+    role: "Pitches itself as a B2A (business-to-agent) platform."
+    url: "https://agentuity.com"
+  - kind: project
+    name: "Mux"
+    role: "Video API — context for the no-eyes argument."
+    url: "https://mux.com"
 sources:
   - type: talk
     slug: house-adoption
