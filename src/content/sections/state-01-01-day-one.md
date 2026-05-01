@@ -11,42 +11,57 @@ concepts:
   - instruction-budget
   - gen-3-sdk
   - code-mode
-go_deeper:
-  - kind: person
-    name: "Geoffrey Huntley"
-    role: "Independent dev, ex-Sourcegraph. The identity-collapse keynote."
-    url: "https://ghuntley.com"
-  - kind: person
-    name: "Dax Raad"
-    role: "OpenCode. Argued there are no good ideas in 15 minutes."
-    url: "https://x.com/thdxr"
-  - kind: person
-    name: "Dex Horthy"
-    role: "HumanLayer. Walked back his own 12-factor-agents advice."
-    url: "https://github.com/dexhorthy"
-  - kind: person
-    name: "Kent C. Dodds"
-    role: "Built Kody — domain-specific coding agent for EpicWeb."
-    url: "https://kentcdodds.com"
-  - kind: person
-    name: "Ben Davis"
-    role: "Coined Gen-3 SDK — coding-agent as runtime."
-  - kind: project
-    name: "Cloudflare Code Mode"
-    role: "Sandboxed isolates as agent execution substrate."
-    url: "https://blog.cloudflare.com/code-mode/"
-  - kind: project
-    name: "Claude Agent SDK"
-    role: "Anthropic's reference for the Gen-3 pattern."
-    url: "https://docs.anthropic.com/en/docs/claude-code/sdk"
-  - kind: project
-    name: "OpenCode"
-    role: "Open-source coding-agent SDK."
-    url: "https://opencode.ai"
-  - kind: read
-    name: "A Pattern Language — Christopher Alexander"
-    role: "The frame underneath all of this — patterns as frozen resolutions of forces."
-    url: "https://en.wikipedia.org/wiki/A_Pattern_Language"
+threads:
+  - question: "If patterns are unfreezing, what's the new pattern language?"
+    note: "Alexander wrote about architecture, but the move he made — naming stable resolutions of competing forces — is what software needs again right now. The forces have moved; the names haven't been written."
+    explore:
+      - kind: read
+        name: "A Pattern Language — Christopher Alexander"
+        role: "The frame underneath all of this."
+        url: "https://en.wikipedia.org/wiki/A_Pattern_Language"
+      - kind: person
+        name: "Geoffrey Huntley"
+        role: "The identity-collapse keynote — a working diary of what's changing."
+        url: "https://ghuntley.com"
+  - question: "Was engineering really the filter on bad ideas?"
+    note: "Dax's claim is that the difficulty of shipping was a hidden taste function. If true, removing it doesn't surface latent good ideas — it surfaces all the bad ones that were politely shelved."
+    explore:
+      - kind: person
+        name: "Dax Raad"
+        role: "OpenCode. Rawdogged the talk with no slides."
+        url: "https://x.com/thdxr"
+      - kind: project
+        name: "OpenCode"
+        role: "His open-source coding-agent SDK."
+        url: "https://opencode.ai"
+  - question: "Is the instruction budget a real cognitive limit, or just a UX one?"
+    note: "Dex says ~100–200 instructions before a thinking model starts dropping them. Worth testing for your own stack — and worth asking whether the limit is the model or the way we're stacking instructions."
+    explore:
+      - kind: person
+        name: "Dex Horthy"
+        role: "HumanLayer. Walked back his own 12-factor advice in public."
+        url: "https://github.com/dexhorthy"
+  - question: "Could MCPs-as-security-boundary actually work?"
+    note: "Code-mode plus a sandbox lets the agent write code, but only against APIs you control. The interesting question is whether the agent can be made to *like* this constraint, or whether it'll keep smuggling bash in."
+    explore:
+      - kind: person
+        name: "Kent C. Dodds"
+        role: "Built Kody — service-worker-pattern interception of agent fetches."
+        url: "https://kentcdodds.com"
+      - kind: project
+        name: "Cloudflare Code Mode"
+        role: "Sandboxed isolates as the execution substrate."
+        url: "https://blog.cloudflare.com/code-mode/"
+  - question: "Is the unit of shipping really moving from code to markdown?"
+    note: "Ben's Gen-3 framing is that your program is a directory of skill files plus a coding agent as runtime. If that's right, every existing application framework is suddenly the wrong abstraction layer."
+    explore:
+      - kind: person
+        name: "Ben Davis"
+        role: "Coined Gen-3 SDK — coding-agent as runtime."
+      - kind: project
+        name: "Claude Agent SDK"
+        role: "Anthropic's reference implementation of the Gen-3 pattern."
+        url: "https://docs.anthropic.com/en/docs/claude-code/sdk"
 sources:
   - type: talk
     slug: huntley-identity

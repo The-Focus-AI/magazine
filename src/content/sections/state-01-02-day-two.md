@@ -13,38 +13,56 @@ concepts:
   - token-consumption
   - code-mode
   - local-inference
-go_deeper:
-  - kind: person
-    name: "Adam House"
-    role: "Workplace adoption — humans-learning-to-delegate."
-  - kind: person
-    name: "Dave Kiss"
-    role: "Mux. The next user won't have eyes."
-    url: "https://www.davekiss.com"
-  - kind: person
-    name: "Jay Blalock"
-    role: "Agentuity — the agent-as-customer pitch."
-    url: "https://agentuity.com"
-  - kind: person
-    name: "Laurie Voss"
-    role: "Anthropic. The skills-vs-MCP eval data."
-    url: "https://seldo.com"
-  - kind: person
-    name: "Sunil Pai"
-    role: "Cloudflare. Software 3.5 — code-mode in production."
-    url: "https://x.com/threepointone"
-  - kind: person
-    name: "Andrew Chieng"
-    role: "Cerebras. Token economics at the inference frontier."
-    url: "https://cerebras.ai"
-  - kind: project
-    name: "Agentuity"
-    role: "Pitches itself as a B2A (business-to-agent) platform."
-    url: "https://agentuity.com"
-  - kind: project
-    name: "Mux"
-    role: "Video API — context for the no-eyes argument."
-    url: "https://mux.com"
+threads:
+  - question: "Slop-cannon, skill-issue, learned agency — where are you on this curve?"
+    note: "House's claim is that adoption isn't a skill question or a tools question, it's an internalization question. Worth asking which engineers in your org are reactive, which are self-directed, and what the practice looks like to bridge them."
+    explore:
+      - kind: person
+        name: "Adam House"
+        role: "G2i. Five engineer case studies on real adoption."
+  - question: "What's the fourth customer type after B2B, B2C, B2A?"
+    note: "Or is three the right number? Agents-as-customers is the new shape; the price point sits between SaaS and consumer. The unanswered piece is whether 'agents' splits further — personal agents vs. organizational agents may want very different surfaces."
+    explore:
+      - kind: person
+        name: "Dave Kiss"
+        role: "Mux. The next user won't have eyes."
+        url: "https://www.davekiss.com"
+      - kind: project
+        name: "Mux"
+        role: "Video API — the context for the no-eyes argument."
+        url: "https://mux.com"
+  - question: "If a 60-year-old in Texas can replace HubSpot with a coding agent, what's a SaaS company actually selling?"
+    note: "Blalock's two stories — manufacturer and window cleaner — are leading indicators. Both bought MacMinis to run agents locally. The pricing model and the integration pitch both have to change."
+    explore:
+      - kind: person
+        name: "Jay Blalock"
+        role: "Agentuity. The B2A platform pitch."
+        url: "https://agentuity.com"
+      - kind: project
+        name: "Agentuity"
+        role: "Pitches itself as the business-to-agent platform."
+        url: "https://agentuity.com"
+  - question: "MCP vs. skills — is the answer really 'both, plus code-mode'?"
+    note: "Voss's eval is the closest thing to data we have. Five hundred runs say correctness is a wash but cost and latency aren't. The interesting move is when the agent is denied tools and smuggles bash in anyway."
+    explore:
+      - kind: person
+        name: "Laurie Voss"
+        role: "Anthropic. The skills-vs-MCP eval at 500 runs."
+        url: "https://seldo.com"
+  - question: "Is 'everything is a model' the right architecture, or just a phase?"
+    note: "Bhakta's Software 3.5 — specialized sub-agents at different speeds, frontier model only for reasoning. The question worth holding open: does this layer-cake stay, or does one model eventually do all of it?"
+    explore:
+      - kind: person
+        name: "Sunil Pai"
+        role: "Cloudflare. Software 3.5 in production."
+        url: "https://x.com/threepointone"
+  - question: "Hosted, API, local — which one wins for you?"
+    note: "Inference is shifting toward zero cost. The unnamed third path is local — running on the GPU you already own. Watch this space; the cybersecurity implications cut both directions."
+    explore:
+      - kind: person
+        name: "Andrew Chieng"
+        role: "Cerebras. Token economics at the frontier."
+        url: "https://cerebras.ai"
 sources:
   - type: talk
     slug: house-adoption

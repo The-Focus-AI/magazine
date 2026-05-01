@@ -12,22 +12,34 @@ concepts:
   - sub-agents
   - knowledge-graph
   - inference-cost
-go_deeper:
-  - kind: project
-    name: "Hermes"
-    role: "Memory-and-persona framework — the model the closing argument liked."
-    url: "https://github.com/AdjectiveAllison/hermes"
-  - kind: person
-    name: "Nyah Macklin"
-    role: "Neo4j. Context graphs as decision traces."
-  - kind: project
-    name: "Neo4j"
-    role: "Graph DB underneath much of the agent-memory work."
-    url: "https://neo4j.com"
-  - kind: read
-    name: "Cybernetics — Norbert Wiener"
-    role: "The command-and-control frame the closing argument gestured at."
-    url: "https://en.wikipedia.org/wiki/Cybernetics_(book)"
+threads:
+  - question: "What is memory, actually?"
+    note: "Hermes models persona; Neo4j-style context graphs model decision traces. Neither is the same thing as 'memory' in the human sense. The shape underneath — SQL, NoSQL, graph, all three — is unsettled."
+    explore:
+      - kind: project
+        name: "Hermes"
+        role: "Memory-and-persona framework."
+        url: "https://github.com/AdjectiveAllison/hermes"
+      - kind: person
+        name: "Nyah Macklin"
+        role: "Neo4j. Context graphs as decision traces."
+      - kind: project
+        name: "Neo4j"
+        role: "The graph DB underneath much of this."
+        url: "https://neo4j.com"
+  - question: "What are sub-agents, really?"
+    note: "Forking and pruning of context — but also, possibly, different models, faster, cheaper, more specialized. The compaction case is obvious. The deeper case is unclear. No good reading yet — watch this space."
+  - question: "What is the user interface for an agent?"
+    note: "The Telegram-chat pattern works because text is how we already socialize. Voice + text + MCP-auth-in-conversation may be the third thing. Skills isn't quite the right word for what's emerging here."
+  - question: "Is there a cybernetics frame underneath all of this?"
+    note: "Command and control. Feedback loops. Wiener was naming this in 1948 for a different kind of machine. The vocabulary may already exist; we're just rediscovering it."
+    explore:
+      - kind: read
+        name: "Cybernetics — Norbert Wiener"
+        role: "1948. The original command-and-control frame."
+        url: "https://en.wikipedia.org/wiki/Cybernetics_(book)"
+  - question: "What's *your* answer?"
+    note: "Write back. wschenk@thefocus.ai. The next issue picks up where this one left off."
 ---
 
 The open questions I'm leaving the conference with.

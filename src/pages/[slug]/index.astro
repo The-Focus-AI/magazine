@@ -144,7 +144,7 @@ const imp = imprint[vertical];
               </span>
             </header>
 
-            <div class={`read-section-grid ${section.data.go_deeper && section.data.go_deeper.length > 0 ? 'has-sidebar' : ''}`}>
+            <div class={`read-section-grid ${section.data.threads && section.data.threads.length > 0 ? 'has-sidebar' : ''}`}>
               <div class="read-section-main">
                 {section.data.pull_quote && !isForeword && (
                   <aside class="read-pullquote">{section.data.pull_quote}</aside>
@@ -157,24 +157,33 @@ const imp = imprint[vertical];
                 <div class="read-section-end">§</div>
               </div>
 
-              {section.data.go_deeper && section.data.go_deeper.length > 0 && (
-                <aside class="go-deeper">
-                  <div class="go-deeper-label">Go Deeper</div>
-                  <ul class="go-deeper-list">
-                    {section.data.go_deeper.map((ref) => {
-                      const Tag = ref.url ? 'a' : 'div';
-                      return (
-                        <li class={`gd-item gd-${ref.kind}`}>
-                          <Tag {...(ref.url ? { href: ref.url, target: '_blank', rel: 'noopener noreferrer' } : {})}>
-                            <span class="gd-kind">{ref.kind}</span>
-                            <span class="gd-name">{ref.name}</span>
-                            {ref.role && <span class="gd-role">{ref.role}</span>}
-                            {ref.note && <span class="gd-note">{ref.note}</span>}
-                          </Tag>
-                        </li>
-                      );
-                    })}
-                  </ul>
+              {section.data.threads && section.data.threads.length > 0 && (
+                <aside class="threads">
+                  <div class="threads-label">Threads to pull on</div>
+                  <ol class="threads-list">
+                    {section.data.threads.map((thread) => (
+                      <li class="thread-item">
+                        <h3 class="thread-question">{thread.question}</h3>
+                        {thread.note && <p class="thread-note">{thread.note}</p>}
+                        {thread.explore && thread.explore.length > 0 && (
+                          <ul class="thread-explore">
+                            {thread.explore.map((ref) => {
+                              const Tag = ref.url ? 'a' : 'div';
+                              return (
+                                <li class={`thread-link thread-${ref.kind}`}>
+                                  <Tag {...(ref.url ? { href: ref.url, target: '_blank', rel: 'noopener noreferrer' } : {})}>
+                                    <span class="thread-kind">{ref.kind}</span>
+                                    <span class="thread-name">{ref.name}</span>
+                                    {ref.role && <span class="thread-role">{ref.role}</span>}
+                                  </Tag>
+                                </li>
+                              );
+                            })}
+                          </ul>
+                        )}
+                      </li>
+                    ))}
+                  </ol>
                 </aside>
               )}
             </div>
@@ -346,86 +355,132 @@ const imp = imprint[vertical];
       min-width: 0;
     }
 
-    /* ─── Go Deeper sidebar ─── */
-    .go-deeper {
+    /* ─── Threads sidebar ─── */
+    .threads {
       position: sticky;
       top: 24px;
       font-family: var(--mag-body);
       font-size: 13px;
-      line-height: 1.45;
+      line-height: 1.5;
       padding-left: 24px;
       border-left: 1px solid var(--mag-rule);
+      max-height: calc(100vh - 48px);
+      overflow-y: auto;
     }
-    .go-deeper-label {
+    .threads-label {
       font-family: var(--mag-mono);
       font-size: 10px;
       font-weight: 700;
       letter-spacing: 0.24em;
       text-transform: uppercase;
       color: var(--mag-accent);
-      margin-bottom: 16px;
+      margin-bottom: 18px;
       padding-bottom: 8px;
       border-bottom: 1px solid var(--mag-ink);
     }
-    .go-deeper-list {
+    .threads-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      counter-reset: thread;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+    .thread-item {
+      counter-increment: thread;
+      position: relative;
+      padding-left: 28px;
+    }
+    .thread-item::before {
+      content: counter(thread, decimal-leading-zero);
+      position: absolute;
+      left: 0;
+      top: 4px;
+      font-family: var(--mag-mono);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: var(--mag-accent);
+    }
+    .thread-question {
+      font-family: var(--mag-display);
+      font-style: italic;
+      font-size: 17px;
+      line-height: 1.25;
+      letter-spacing: -0.01em;
+      color: var(--mag-ink);
+      margin: 0 0 10px;
+      font-weight: 400;
+    }
+    .thread-note {
+      font-size: 12.5px;
+      line-height: 1.5;
+      color: var(--mag-ink-soft);
+      margin: 0 0 12px;
+    }
+    .thread-explore {
       list-style: none;
       padding: 0;
       margin: 0;
       display: flex;
       flex-direction: column;
-      gap: 14px;
+      gap: 6px;
+      border-top: 1px solid var(--mag-rule);
+      padding-top: 10px;
     }
-    .gd-item > a,
-    .gd-item > div {
-      display: block;
+    .thread-link > a,
+    .thread-link > div {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 4px 8px;
+      align-items: baseline;
       text-decoration: none;
       color: var(--mag-ink);
-      padding: 10px 0;
-      border-bottom: 1px solid var(--mag-rule);
+      padding: 4px 0;
       transition: color 150ms ease, transform 150ms ease;
     }
-    .gd-item > a:hover {
+    .thread-link > a:hover {
       color: var(--mag-accent-deep);
       transform: translateX(2px);
     }
-    .gd-kind {
-      display: inline-block;
+    .thread-kind {
+      grid-row: 1;
+      grid-column: 1;
       font-family: var(--mag-mono);
-      font-size: 9px;
+      font-size: 8.5px;
       font-weight: 700;
       letter-spacing: 0.18em;
       text-transform: uppercase;
       color: var(--mag-accent);
-      margin-bottom: 4px;
     }
-    .gd-name {
-      display: block;
+    .thread-name {
+      grid-row: 1;
+      grid-column: 2;
       font-family: var(--mag-display);
       font-style: italic;
-      font-size: 16px;
+      font-size: 13.5px;
       line-height: 1.2;
-      letter-spacing: -0.01em;
       color: var(--mag-ink);
-      margin-bottom: 4px;
     }
-    .gd-role,
-    .gd-note {
-      display: block;
-      font-size: 12.5px;
-      line-height: 1.4;
+    .thread-role {
+      grid-row: 2;
+      grid-column: 2;
+      font-size: 11.5px;
+      line-height: 1.35;
       color: var(--mag-ink-soft);
     }
-    .gd-note {
-      margin-top: 4px;
-      font-style: italic;
-    }
-    .gd-item > a::after {
-      content: ' →';
+    .thread-link > a::after {
+      content: '↗';
+      grid-row: 1;
+      grid-column: 2;
+      justify-self: end;
+      font-family: var(--mag-mono);
       color: var(--mag-accent);
       opacity: 0;
       transition: opacity 150ms ease;
     }
-    .gd-item > a:hover::after { opacity: 1; }
+    .thread-link > a:hover::after { opacity: 1; }
 
     .read-section-head {
       display: grid;
@@ -678,13 +733,15 @@ const imp = imprint[vertical];
         grid-template-columns: 1fr;
         gap: 32px;
       }
-      .go-deeper {
+      .threads {
         position: static;
         padding-left: 0;
         padding-top: 24px;
         border-left: none;
         border-top: 1px solid var(--mag-ink);
         max-width: 720px;
+        max-height: none;
+        overflow-y: visible;
       }
     }
 
@@ -947,11 +1004,11 @@ const imp = imprint[vertical];
         font-size: 16pt !important;
       }
 
-      /* ─── Go Deeper — print as end-of-section block ───────────── */
+      /* ─── Threads — print as end-of-section block ───────────── */
       .read-section-grid.has-sidebar {
         display: block !important;
       }
-      .go-deeper {
+      .threads {
         position: static !important;
         padding: 14pt 0 0 !important;
         margin-top: 18pt !important;
@@ -960,29 +1017,52 @@ const imp = imprint[vertical];
         column-span: all !important;
         page-break-inside: avoid;
         break-inside: avoid;
+        max-height: none !important;
+        overflow: visible !important;
       }
-      .go-deeper-label {
+      .threads-label {
         font-size: 9pt !important;
-        margin-bottom: 8pt !important;
+        margin-bottom: 10pt !important;
         padding-bottom: 4pt !important;
         border-bottom: 0.5pt solid var(--mag-ink) !important;
       }
-      .go-deeper-list {
+      .threads-list {
         display: grid !important;
         grid-template-columns: 1fr 1fr !important;
         column-gap: 22pt !important;
-        gap: 8pt 22pt !important;
+        gap: 14pt 22pt !important;
       }
-      .gd-item > a,
-      .gd-item > div {
-        padding: 4pt 0 !important;
-        border-bottom: 0.5pt solid rgba(20, 19, 16, 0.18) !important;
+      .thread-item {
+        padding-left: 22pt !important;
+        page-break-inside: avoid;
+        break-inside: avoid;
       }
-      .gd-kind { font-size: 7.5pt !important; margin-bottom: 1pt !important; }
-      .gd-name { font-size: 11pt !important; margin-bottom: 1pt !important; }
-      .gd-role,
-      .gd-note { font-size: 9pt !important; line-height: 1.35 !important; }
-      .gd-item > a::after { content: '' !important; }
+      .thread-item::before {
+        font-size: 8pt !important;
+        top: 2pt !important;
+      }
+      .thread-question {
+        font-size: 12pt !important;
+        line-height: 1.25 !important;
+        margin: 0 0 5pt !important;
+      }
+      .thread-note {
+        font-size: 9pt !important;
+        line-height: 1.4 !important;
+        margin: 0 0 6pt !important;
+      }
+      .thread-explore {
+        padding-top: 5pt !important;
+        gap: 3pt !important;
+      }
+      .thread-link > a,
+      .thread-link > div {
+        padding: 2pt 0 !important;
+      }
+      .thread-kind { font-size: 7pt !important; }
+      .thread-name { font-size: 10pt !important; }
+      .thread-role { font-size: 8.5pt !important; line-height: 1.3 !important; }
+      .thread-link > a::after { content: '' !important; }
 
       /* ─── Closer — its own page ───────────────────────────────── */
       .read-closer {

@@ -47,17 +47,26 @@ const sections = defineCollection({
       .optional(),
     concepts: z.array(z.string()).optional(),
     pull_quote: z.string().optional(),
-    /* Per-section sidebar — bios + project links + reference reading,
-       hand-curated. Renders as a "Go Deeper" sidebar on web and as a
-       footnote-style block at the end of the section in print. */
-    go_deeper: z
+    /* Per-section sidebar — question-led threads to pull on. Each thread
+       is an open question or invitation, with 1–N things to chase
+       (people, projects, reads). Renders as a sticky sidebar on web and
+       as an end-of-section block in print. Some threads intentionally
+       have no `explore` entries — the unanswered ones matter most. */
+    threads: z
       .array(
         z.object({
-          kind: z.enum(['person', 'project', 'talk', 'read', 'watch']),
-          name: z.string(),
-          role: z.string().optional(),
-          url: z.string().url().optional(),
+          question: z.string(),
           note: z.string().optional(),
+          explore: z
+            .array(
+              z.object({
+                kind: z.enum(['person', 'project', 'talk', 'read', 'watch']),
+                name: z.string(),
+                role: z.string().optional(),
+                url: z.string().url().optional(),
+              })
+            )
+            .optional(),
         })
       )
       .optional(),

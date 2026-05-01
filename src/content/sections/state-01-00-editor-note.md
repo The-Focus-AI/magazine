@@ -5,6 +5,17 @@ section_marker: "From the Editor"
 title: "A Note Before Beginning"
 summary: "Why STATE exists, and why this issue. Patterns are frozen resolutions of forces — and the forces just moved. Two days in Miami, one through-line."
 pull_quote: "Patterns are frozen resolutions of forces. When the forces move, every pattern you trusted becomes, for a little while, a question again."
+threads:
+  - question: "Only have ten minutes?"
+    note: "Skip to § ∞ — the closing on what an agent actually is. That's where the open questions live."
+  - question: "Came for the takeaways?"
+    note: "Read § II first. Day Two is where the patterns hardened — three populations learning agency at the same moment."
+  - question: "Skeptical that anything actually changed?"
+    note: "Start with Dax in § I. The argument that engineers were the filter and we removed it. Decide for yourself whether the room is right."
+  - question: "Want the arc?"
+    note: "Read in order, slowly. Print it if you can — the magazine is laid out for it. Mark the parts you disagree with."
+  - question: "Want the shape?"
+    note: "Just § ∞. It's the question this whole issue is circling around without answering."
 ---
 
 Patterns are frozen resolutions of forces. That's Christopher Alexander. When the forces move, every pattern you trusted becomes, for a little while, a question again.
